@@ -1,1 +1,26 @@
-<p>login works!</p>
+<div class="login-container">
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar class="logo-img"></div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field>
+        <mat-label>CPF</mat-label>
+        <input matInput [(ngModel)]="usuario.cpf" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Senha</mat-label>
+        <input matInput type="password"  [(ngModel)]="usuario.senha" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="login()">Entrar</button>
+      <div class="login-links">
+        <a href="#">Esqueci minha senha</a>
+        <span class="divider">|</span>
+        <a routerLink="/usuario/novo/cadastro">Cadastrar</a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
