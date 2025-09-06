@@ -1,0 +1,41 @@
+
+
+.toast-container{
+    width: 400px;
+    height: 120px;
+    background-color: blue;
+    position: fixed;
+    top: 0;
+    left: auto;
+    right: 0;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+.toast-header{
+    padding: 0px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.toast-title{
+    font-size: 18px;
+}
+
+.toast-message{
+    font-size: 14px;
+}
+
+.close-button{
+    cursor: pointer;
+    transition: all ease 0.3s; 
+    color: var(--main-black);
+}
+
+.close-button:hover{
+    font-weight: 600;
+}
+
+.toast-body{
+    padding: 0px 10px;
+}

@@ -25,6 +25,13 @@
 button {
     width: 100%;
     margin-top: 10px;
+    border-radius: 15px;
+    background-color: #0090B3 !important;
+    transition: all ease 0.4s;
+}
+
+button:hover {
+    background-color: #015068 !important;
 }
 
 .login-links {

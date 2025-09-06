@@ -4,16 +4,20 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-
+import { environment } from '../../../app/environments/environment';
+import { AuthService } from '../../../app/services/auth';
+import { ToastComponent } from '../../components/toast/toast.component'
 
 @Component({
   selector: 'app-login',
   imports: [
     FormsModule,
     MatCardModule, 
-    MatFormFieldModule, 
+    MatFormFieldModule,
+    ToastComponent,
     MatInputModule, 
     MatButtonModule],
+  providers: [AuthService],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -23,12 +27,23 @@ export class LoginComponent {
     senha: ''
   }
 
-  constructor() {}
-  ngOnInit(): void {
+  constructor(private service: AuthService) {}
 
+  ngOnInit(): void {
+    console.log(environment.ANGULAR_API)
+    console.log(environment.production)
   }
 
   login(): void {
-    console.log("login", this.usuario)
+    const resp = this.service.auth_login({doc: this.usuario.cpf, password: this.usuario.senha}).subscribe({
+      next: (response) => {
+        console.log('Login bem-sucedido!', response);
+        // Aqui você pode salvar tokens, navegar, etc.
+      },
+      error: (err) => {
+        console.log(err.error.detail);
+      }
+    })
+    console.log(resp)
   }
 }

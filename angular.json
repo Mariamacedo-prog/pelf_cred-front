@@ -48,6 +48,14 @@
               ],
               "outputHashing": "all"
             },
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/app/environments/environment.ts",
+                  "with": "src/app/environments/environment.stage.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -64,6 +72,9 @@
             },
             "development": {
               "buildTarget": "pelf-cred:build:development"
+            },
+            "staging": {
+              "buildTarget": "pelf-cred:build:staging"
             }
           },
           "defaultConfiguration": "development"
