@@ -1,9 +1,12 @@
-<div class="toast-container">
+<div *ngIf="title !== ''" class="toast-container toast-{{type}}">
     <div class="toast-header">
-        <p class="toast-title">toast works!</p>
-        <div class="close-button">X</div>
-    </div>
-    <div class="toast-body">
-       <p class="toast-message">toast works! toast works! toast works! toast works!</p>
+        <mat-icon class="icon-{{type}}" aria-hidden="false" fontIcon="{{ icon }}">{{ icon }}</mat-icon>
+        <div class="toast-body">
+             <p class="toast-title">{{title}}</p>
+            <p class="toast-message">{{description}}</p>
+        </div>
+        <div class="close-button" (click)="this.title = ''">
+            <mat-icon class="icon-{{type}}" aria-hidden="false" fontIcon="close"></mat-icon>
+        </div>
     </div>
 </div>

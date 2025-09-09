@@ -7,6 +7,8 @@
     "start:hml": "ng serve --configuration=staging",
     "start:prod": "ng serve --configuration=production",
     "build": "ng build",
+    "build:hml": "ng build --configuration=staging",
+    "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
