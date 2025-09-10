@@ -1,0 +1,103 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+:root {
+    --main-primary: #0090B3;
+    --main-primary-medium: #015068;
+    --main-primary-medium-dark: #013E53;
+    --main-primary-dark: #011321;
+    --main-black: #040404;
+    --main-white: #ffffff;
+    --main-success-green: #83C385;
+    --main-success-green-l:#E5F4E7;
+    --main-error-red: #f46b61;
+    --main-error-red-l: #FFE6DF;
+    --main-warming-yellow: #FAB54F;
+    --main-warming-yellow-l: #FFF1DC;
+    --main-info-blue: #6CA9F1;
+    --main-info-blue-l: #E0EEFB;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.container{
+    width: 100vw;
+    height: 100vh;
+}
+
+.inputs-row-form {
+    width: 100%;
+}
+
+.inputs-row-form-md {
+    width: 70%;
+}
+   
+.inputs-row-form-sm {
+    width: 50%;
+}
+
+.inputs-row-form-md, .inputs-row-form-sm, .inputs-row-form{
+    display: flex;
+    align-items: center;
+
+    mat-form-field {
+        width: 100%;
+        margin: 0px 10px;
+    }
+
+    .input-lg{
+        width: 100%;
+    }
+    .input-md{
+        width: 60%;
+    }
+    .input-sm{
+        width: 40%;
+    }
+}
+
+.area-botao-form {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    button{
+        margin: 0px 10px;
+    }
+}
+
+@media screen and (max-width: 1225px) {
+    .inputs-row-form-md {
+        width: 80%;
+    }
+    
+    .inputs-row-form-sm {
+        width: 60%;
+    }
+
+    .inputs-row-form-md, .inputs-row-form-sm, .inputs-row-form{
+        .input-md{
+            width: 80%;
+        }
+        .input-sm{
+            width: 50%;
+        }
+    }
+}
+
+@media screen and (max-width: 730px) {
+    .inputs-row-form, .inputs-row-form-md, .inputs-row-form-sm {
+        flex-direction: column;
+        width: 100%;
+        .input-lg{
+            width: 100%;
+        }
+        .input-md{
+            width: 100%;
+        }
+        .input-sm{
+            width: 100%;
+        }
+    }
+}

@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../../../app/environments/environment';
 import { AuthService } from '../../../app/services/auth';
 import { ToastService } from '../../services/toast';
+import { StorageService } from '../../services/storage.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,11 +16,12 @@ import { ToastService } from '../../services/toast';
     FormsModule,
     MatCardModule, 
     MatFormFieldModule,
-    MatInputModule, 
+    MatInputModule,
+    RouterModule, 
     MatButtonModule],
-  providers: [AuthService, ToastService],
+  providers: [AuthService, ToastService, StorageService],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   usuario = {
@@ -26,25 +29,36 @@ export class LoginComponent {
     senha: ''
   }
 
-  constructor(private service: AuthService, private toastService:ToastService) {}
+  constructor(private service: AuthService, private toastService:ToastService,private storageService: StorageService) {}
 
   ngOnInit(): void {
     console.log(environment.ANGULAR_API)
     console.log(environment.production)
   }
 
+  decodeJWT(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      const decoded = atob(payload);
+      return JSON.parse(decoded);
+    } catch (e) {
+      console.error('Invalid token:', e);
+      return null;
+    }
+  }
+
   login(): void {
-    const resp = this.service.auth_login({doc: this.usuario.cpf, password: this.usuario.senha}).subscribe({
+    this.service.auth_login({doc: this.usuario.cpf, password: this.usuario.senha}).subscribe({
       next: (response) => {
-        console.log('Login bem-sucedido!', response);
-        // Aqui você pode salvar tokens, navegar, etc.
-        this.toastService.show('success', 'Sucesso!', 'Realizado login com sucesso!')
+        if(response.access_token){
+          let user = this.decodeJWT(response.access_token);
+          this.storageService.set('token', response.access_token)
+          this.storageService.set('user', user)
+        }
       },
       error: (err) => {
-        console.log(err.error.detail);
-        this.toastService.show('error', 'Erro!', err.error.detail)
+        this.toastService.show('error', 'Erro!', err.error.detail || "Ocorreu um erro!")
       }
     })
-    console.log(resp)
   }
 }

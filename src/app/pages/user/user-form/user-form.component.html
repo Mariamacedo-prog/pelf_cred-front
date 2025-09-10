@@ -1,0 +1,90 @@
+
+<div class="container">
+  <mat-card>
+    <mat-card-header >
+      <mat-card-title>Cadastro de Usuário</mat-card-title>
+    </mat-card-header>
+
+
+    <form [formGroup]="formControls">
+      <mat-card-content >
+        <div class="inputs-row-form">
+            <mat-form-field class="input-lg" appearance="fill">
+                <mat-label>Nome do Usuário</mat-label>
+                <input matInput formControlName="nome" />
+            </mat-form-field>
+
+            <mat-form-field  appearance="fill">
+                <mat-label>E-mail</mat-label>
+                <input matInput formControlName="email"/>
+            </mat-form-field>
+
+            <mat-form-field class="input-sm" appearance="fill">
+                <mat-label>Telefone</mat-label>
+                <input matInput formControlName="telefone"/>
+            </mat-form-field>
+
+            <mat-form-field  class="input-md">
+                <mat-label>CPF</mat-label>
+                <input type="text"
+                    matInput
+                    formControlName="cpf"
+                    (keyup)="handleKeyUp($event)">
+            </mat-form-field>
+        </div>
+
+        <div class="inputs-row-form-sm">
+            <mat-form-field class="input-sm" appearance="fill">
+                <mat-label>Senha</mat-label>
+                <input matInput formControlName="senha" />
+            </mat-form-field>
+
+            <mat-form-field class="input-sm" appearance="fill">
+                <mat-label>Confime sua Senha</mat-label>
+                <input matInput formControlName="email"/>
+            </mat-form-field>
+        </div>
+        
+         <mat-card-content [formGroup]="enderecoControls">
+            <mat-card-title>Endereço</mat-card-title>
+             <div class="inputs-row-form">
+                 <mat-form-field class="input-lg" appearance="fill">
+                    <mat-label>Rua</mat-label>
+                    <input matInput formControlName="rua" />
+                </mat-form-field>
+
+                <mat-form-field class="input-sm" appearance="fill">
+                    <mat-label>Número</mat-label>
+                    <input matInput formControlName="numero"/>
+                </mat-form-field>
+
+                <mat-form-field  appearance="fill">
+                    <mat-label>Bairro</mat-label>
+                    <input matInput formControlName="bairro"/>
+                </mat-form-field>
+            </div>
+             <div class="inputs-row-form">
+                 <mat-form-field appearance="fill">
+                    <mat-label>Complemento</mat-label>
+                    <input matInput formControlName="complemento" />
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Cidade</mat-label>
+                    <input matInput formControlName="cidade"/>
+                </mat-form-field>
+                <mat-form-field class="input-sm" appearance="fill">
+                    <mat-label>UF</mat-label>
+                    <input matInput formControlName="uf"/>
+                </mat-form-field>
+            </div>
+         </mat-card-content>
+  
+        <div class="area-botao-form">
+          <button mat-raised-button color="primary" (click)="crate()" [disabled]="!isFormValid()">Cadastrar</button>
+          <button mat-raised-button color="link" routerLink="/login">Voltar</button>
+        </div>
+      </mat-card-content>
+    </form>
+  </mat-card>
+</div>

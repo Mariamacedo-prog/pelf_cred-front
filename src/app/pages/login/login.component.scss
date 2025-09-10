@@ -1,11 +1,12 @@
 .logo-img {
-    background-image: url('../../../../public/logo_pelf_cred.png');
+    background-image: url('../../../../public/Sublogo.png');
     background-size: cover;
     background-position: center;
-    width: 120px;
-    height: 120px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
     margin-left: -40px;
+    margin-bottom: -30px;
 }
 
 .login-container {
@@ -66,12 +67,8 @@ mat-card-header {
 
 
 @media screen and (max-width: 650px) {
-   .logo-img {
-        background-image: url('../../../../public/logo_pelf_cred.png');
-        background-size: cover;
-        background-position: center;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
+    .logo-img {
+        margin-left: -40px;
+        margin-bottom: 20px;
     }
 }

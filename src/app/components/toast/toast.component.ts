@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule
   ],
   templateUrl: './toast.component.html',
-  styleUrl: './toast.component.css'
+  styleUrl: './toast.component.scss'
 })
 export class ToastComponent {
   @Input() type: 'success' | 'error' | 'warning' | 'info' = 'warning';
