@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { ValidateService } from '../../../services/validate.service';
 import { CepService } from '../../../services/cep.service';
 import { ToastService } from '../../../services/toast';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-user-form',
@@ -31,7 +32,7 @@ import { ToastService } from '../../../services/toast';
 export class UserFormComponent {
   formControls!: FormGroup;
   enderecoControls!: FormGroup;
-  constructor(private validateService: ValidateService, private cepService: CepService, private router: Router, private toast: ToastService) {
+  constructor(private validateService: ValidateService, private cepService: CepService, private router: Router, private toast: ToastService, private userService:  UserService) {
   }
 
   ngOnInit(): void {
@@ -57,7 +58,29 @@ export class UserFormComponent {
 
   crate(): void {
     if (this.formControls.valid && this.enderecoControls.valid) {
-      let data = {};
+      let data = {
+        cpf:  this.formControls?.get('cpf')?.value,
+        nome: this.formControls?.get('nome')?.value,
+        email: this.formControls?.get('email')?.value,
+        telefone: this.formControls?.get('telefone')?.value,
+        senha: this.formControls?.get('senha')?.value,
+        endereco: this.enderecoControls.getRawValue()
+      };
+
+      console.log(data)
+
+      
+      this.userService.create_user(data).subscribe(
+            data => {
+              console.log(data);
+              this.toast.show('success', "Erro!",'Cep não localizado!');
+            },
+            error => {
+              console.error(error.error.detail);
+                this.toast.show('error', "Erro!", error.error.detail || 
+                  'Ocorreu um erro, tente novamente')
+            }
+      );
       
     } else {
       this.formControls.markAllAsTouched();

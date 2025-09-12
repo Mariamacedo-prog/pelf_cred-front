@@ -15,6 +15,6 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   create_user(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/user/create`, data);
+    return this.http.post(`${this.baseUrl}/novo/user`, data);
   }
 }

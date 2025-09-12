@@ -48,7 +48,7 @@ export class LoginComponent {
   }
 
   login(): void {
-    this.service.auth_login({doc: this.usuario.cpf, password: this.usuario.senha}).subscribe({
+    this.service.auth_login({login: this.usuario.cpf, senha: this.usuario.senha}).subscribe({
       next: (response) => {
         if(response.access_token){
           let user = this.decodeJWT(response.access_token);
