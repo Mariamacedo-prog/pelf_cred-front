@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -8,7 +8,7 @@ import { environment } from '../../../app/environments/environment';
 import { AuthService } from '../../../app/services/auth';
 import { ToastService } from '../../services/toast';
 import { StorageService } from '../../services/storage.service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -29,11 +29,15 @@ export class LoginComponent {
     senha: ''
   }
 
-  constructor(private service: AuthService, private toastService:ToastService,private storageService: StorageService) {}
+  constructor(private service: AuthService, private toastService:ToastService, private router: Router, private storageService: StorageService) {
+  }
 
   ngOnInit(): void {
-    console.log(environment.ANGULAR_API)
-    console.log(environment.production)
+    const isLoggedIn = this.storageService.get('isLoggedIn');
+
+    if(isLoggedIn){
+        this.router.navigate(['/usuario/lista']);
+    }
   }
 
   decodeJWT(token: string): any {
@@ -54,6 +58,8 @@ export class LoginComponent {
           let user = this.decodeJWT(response.access_token);
           this.storageService.set('token', response.access_token)
           this.storageService.set('user', user)
+          this.storageService.set('isLoggedIn', true)
+          this.router.navigate(['/usuario/lista']);
         }
       },
       error: (err) => {

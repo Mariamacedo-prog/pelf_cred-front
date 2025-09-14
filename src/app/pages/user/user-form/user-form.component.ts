@@ -56,7 +56,7 @@ export class UserFormComponent {
     });
   }
 
-  crate(): void {
+  create(): void {
     if (this.formControls.valid && this.enderecoControls.valid) {
       let data = {
         cpf:  this.formControls?.get('cpf')?.value,
@@ -67,13 +67,11 @@ export class UserFormComponent {
         endereco: this.enderecoControls.getRawValue()
       };
 
-      console.log(data)
-
-      
       this.userService.create_user(data).subscribe(
             data => {
               console.log(data);
-              this.toast.show('success', "Erro!",'Cep não localizado!');
+              this.toast.show('success', "Sucesso!",'Usuário criado com sucesso!');
+               this.router.navigate(['/login']);
             },
             error => {
               console.error(error.error.detail);
@@ -145,5 +143,9 @@ export class UserFormComponent {
     }
 
     return null;
+  }
+
+  backPage(){
+    this.router.navigate(['/login']);
   }
 }

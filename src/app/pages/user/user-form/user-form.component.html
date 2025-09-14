@@ -147,8 +147,8 @@
 
       <!-- Botões -->
       <div class="button-area">
-        <button mat-raised-button color="primary" (click)="crate()">Cadastrar</button>
-        <button mat-stroked-button color="accent" routerLink="/login">Voltar</button>
+        <button mat-raised-button color="primary" (click)="create()">Cadastrar</button>
+        <a mat-stroked-button color="accent" [routerLink]="['/login']">Voltar</a>
       </div>
     </form>
   </mat-card>

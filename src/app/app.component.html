@@ -1,7 +1,8 @@
 
 <main class="main">
+  <app-menu  *ngIf="isLoggedIn" (menuToggled)="onMenuToggled($event)"></app-menu>
   <div class="content">
-    <router-outlet></router-outlet>
+    <router-outlet [ngClass]="{'menu-auth': isLoggedIn, 'menu-open-margin': isMenuOpen, 'menu-closed-margin': !isMenuOpen}"></router-outlet>
   </div>
 </main>
 

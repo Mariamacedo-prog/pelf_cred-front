@@ -1,0 +1,25 @@
+
+<nav *ngIf="isLoggedIn"  class ="menu" [ngClass]="{'menu-open': isMenuOpen, 'menu-closed': !isMenuOpen}">
+  <div class="headerAreaMenu">  
+    <div class="logoIconMenu"> 
+      <mat-icon (click)="toggleMenu()">menu</mat-icon> 
+      <p *ngIf="isMenuOpen">PELF CRED</p>  
+    </div>
+
+  
+  </div> 
+
+  <ul class="menu-list" [ngClass]="{'menu-open': isMenuOpen, 'menu-closed': !isMenuOpen}" >
+    <li *ngFor="let menuItem of menuItens">
+      <a (click)="isMenuOpen = false" [routerLink]="menuItem.route" routerLinkActive="active">
+        <mat-icon style="margin-right: 10px;">{{menuItem.icon}}</mat-icon> 
+        <div *ngIf="isMenuOpen">{{ menuItem.label }}</div> 
+      </a>
+    </li>
+  </ul>
+
+  <div class="footerAreaMenu">  
+    <div  class="logoIconMenu" (click)="logout()">	<mat-icon>keyboard_tab</mat-icon>  <p *ngIf="isMenuOpen">SAIR</p>   </div>
+  </div> 
+</nav> 
+

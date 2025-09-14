@@ -5,6 +5,8 @@
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    display: block;
+    height: 100%;
   }
 
   @media screen and (max-width: 650px) {
@@ -18,5 +20,11 @@
       width: 100%;
       background: var(--red-to-pink-to-purple-horizontal-gradient);
       margin-block: 1.5rem;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    .menu-auth{
+      padding-top: 70px;
     }
   }
