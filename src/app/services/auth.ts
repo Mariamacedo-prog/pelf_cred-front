@@ -45,9 +45,6 @@ export class AuthService {
         next: (response) => {
           if(response.access_token){
             let user = this.decodeJWT(response.access_token);
-            // this.storageService.set('token', response.access_token)
-            // this.storageService.set('user', user)
-            // this.storageService.set('isLoggedIn', true)
             this.router.navigate(['/usuario/lista']);
             this.store.dispatch(loginSuccess({ user: user, token: response.access_token || '' }));
           }

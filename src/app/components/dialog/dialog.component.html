@@ -1,0 +1,12 @@
+<div class="dialog-content">
+  <div mat-dialog-title class="dialog-title">
+    {{title}}
+  </div>
+  <div mat-dialog-content>
+    <p style="padding: 5px; ">{{text}}</p>
+  </div>
+  <div mat-dialog-actions class="buttonArea">
+    <button class="positiveButton" (click)="onYesClick()" color="primary">{{positiveButton}}</button>
+    <button class="negativeButton" (click)="onCancelClick()" color="primary">{{negativeButton}}</button>
+  </div>
+</div>

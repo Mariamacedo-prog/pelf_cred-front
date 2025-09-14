@@ -1,6 +1,6 @@
 nav {
   width: 200px;
-  background-color: #3f51b5;
+  background-color: var(--main-primary);
   padding: 10px;
 
 }
@@ -34,18 +34,18 @@ a {
 }
 
 a:hover {
-  background-color: #2e3c97;
+  background-color: var(--main-primary-medium) !important;
 }
 
 .active {
-  background-color:  #3444ad;
+  background-color:  var(--main-primary-medium) !important;
 }
 
 
 .menu {
   height: calc(100vh - 20px);
   width: 250px; 
-  background-color: #3f51b5;
+  background-color:var(--main-primary);
   color: #fff;
   transition: width 0.3s ease;
   overflow-x: hidden;
