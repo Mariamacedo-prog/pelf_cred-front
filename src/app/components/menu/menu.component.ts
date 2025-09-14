@@ -1,12 +1,14 @@
 
-import {Component, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import {Component, EventEmitter, Output, ChangeDetectorRef, inject } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AuthService } from '../../services/auth';
 import { MenuService } from '../../services/menu.service';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { StorageService } from '../../services/storage.service';
+import { AuthState } from '../../services/storage.service';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 interface MenuItem {
   icon: string;
@@ -29,33 +31,34 @@ export class MenuComponent {
   isMenuOpen = false;
   permissions: any;
   mobileQuery: MediaQueryList;
-  isLoggedIn: boolean = false;
+  isLoggedIn:boolean = false;
   private _mobileQueryListener: () => void;
+  private store = inject(Store);
 
   constructor(private changeDetectorRef: ChangeDetectorRef,
     private menuService: MenuService, 
-    private media: MediaMatcher, 
-    private authService: AuthService,
-    private storageService: StorageService) {
+    private media: MediaMatcher,
+    private authService: AuthService) {
     this.mobileQuery = media.matchMedia('(max-width: 1200px)');
     this._mobileQueryListener = () => {
       this.isMenuOpen = !this.mobileQuery.matches;
       this.changeDetectorRef.detectChanges();
     };
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
-    
+     this.store.select(state => state.auth?.isLoggedIn).subscribe(
+        logged => {
+          this.isLoggedIn = logged;
+        }
+    );
   }
 
   ngOnInit(): void {
-    this.isLoggedIn = this.storageService.get('isLoggedIn') || false;
     this.generateListMenu()
   }
 
   generateListMenu(){
     let teste = this.menuService.getMenuItems();
     let novoMenuList: MenuItem[] = [];
-
-    console.log(teste, "teste")
 
     for(let item of teste){
      // if(this.permissions && this.permissions[item.value] != null){
@@ -71,7 +74,7 @@ export class MenuComponent {
   }
 
   isAuthenticated(): boolean | null{
-    if(localStorage.getItem('isLoggedIn') == 'true'){
+    if(this.isLoggedIn){
       return true;
     }else{
       return false;

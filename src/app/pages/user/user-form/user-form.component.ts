@@ -69,7 +69,6 @@ export class UserFormComponent {
 
       this.userService.create_user(data).subscribe(
             data => {
-              console.log(data);
               this.toast.show('success', "Sucesso!",'Usuário criado com sucesso!');
                this.router.navigate(['/login']);
             },
@@ -88,7 +87,6 @@ export class UserFormComponent {
   }
 
   formatarTelefone() {
-    console.log(this.formControls.get('telefone')?.value)
     if(this.formControls.get('telefone')?.value){
       let telefone = this.formControls.get('telefone')?.value.replace(/\D/g, '');
 
@@ -107,7 +105,6 @@ export class UserFormComponent {
         this.cepService.getAddressByCep(this.enderecoControls?.get('cep')?.value)
           .subscribe(
             data => {
-              console.log(data)
               if(!data.erro){
                 this.enderecoControls?.get('rua')?.setValue(data.logradouro);
                 this.enderecoControls?.get('bairro')?.setValue(data.bairro);

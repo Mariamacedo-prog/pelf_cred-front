@@ -1,23 +1,51 @@
-import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class StorageService {
-   set(key: string, value: any): void {
-    localStorage.setItem(key, JSON.stringify(value));
-  }
+import { createReducer, on, createAction, props, Store } from '@ngrx/store';
 
-  get<T>(key: string): T | null {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) as T : null;
-  }
-
-  remove(key: string): void {
-    localStorage.removeItem(key);
-  }
-
-  clear(): void {
-    localStorage.clear();
-  }
+export interface AuthState {
+  isLoggedIn: boolean;
+  user: any;
+  permissions: any; 
+  token: string;
 }
+
+const initialState: AuthState = {
+  isLoggedIn: false,
+  user: null,
+  permissions: null,
+  token: ''
+};
+
+export const loginSuccess = createAction(
+  '[Auth] Login Success',
+  props<{ user: any, token: string }>()
+);
+
+export const logOutSuccess = createAction(
+   '[Auth] Logout Success'
+);
+
+export const setPermissions = createAction(
+  '[Auth] Set Permissions',
+  props<{ permissions: any }>()
+);
+
+export const authReducer = createReducer(
+  initialState,
+  on(loginSuccess, (state, { user, token }) => ({
+    ...state,
+    isLoggedIn: true,
+    user: user,
+    token: token
+  })),
+  on(logOutSuccess, (state) => ({
+    ...state,
+    isLoggedIn: false,
+    user: null, 
+    token: '', 
+    permissions: {} 
+  })),
+  on(setPermissions, (state, { permissions }) => ({
+    ...state,
+    permissions: permissions
+  }))
+);
