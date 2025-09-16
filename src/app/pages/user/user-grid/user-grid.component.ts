@@ -16,7 +16,14 @@ import { DialogComponent } from '../../../components/dialog/dialog.component';
 
 @Component({
   selector: 'app-user-grid',
-  imports: [CommonModule, MatPaginatorModule, MatIconModule,FormsModule, MatFormFieldModule, MatTableModule,  MatInputModule,
+  imports: [CommonModule, 
+    MatPaginatorModule, 
+    MatIconModule,
+    FormsModule, 
+    MatFormFieldModule, 
+    MatTableModule, 
+    MatInputModule,
+    DialogComponent,
     RouterModule, 
     MatButtonModule],
   templateUrl: './user-grid.component.html',
@@ -45,16 +52,29 @@ export class UserGridComponent {
     length: 0
   }
 
+  modal = {
+    status: false,
+    text:'',
+    id: null
+  }
+
+
   constructor(private router: Router, private toast: ToastService, private userService: UserService, 
     public dialog: MatDialog, private authService: AuthService
   ) {
-    this.authService.permissions$.subscribe(perms => {
-      this.access = perms.usuario;
-    });
+    // this.authService.permissions$.subscribe(perms => {
+    //   this.access = perms.usuario;
+    // });
 
     this.authService.user$.subscribe(user => {
       this.user = user;
     });
+  }
+
+  closeModal() {
+    this.modal.status = false;
+    this.modal.text = '';
+    this.modal.id = null;
   }
   
   addNewUser() {
@@ -64,6 +84,7 @@ export class UserGridComponent {
 
   ngOnInit(): void {
     this.findAllUsers();
+    
   }
   
   findUser(event:any) {
@@ -107,28 +128,27 @@ export class UserGridComponent {
     );
   }
 
-  deleteItem(element: any){
-    const dialogRef = this.dialog.open(DialogComponent, {
-      width: '300px',
-      data: {
-        text: `Tem certeza que deseja excluir Usuário "${element.nome}"?`,
-      }
-    });
+  openModal(element: any){
+    this.modal.status = true;
+    this.modal.text = `Confirma a exclusão do usuário "${element.nome}"?`;
+    this.modal.id = element.id;
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.userService.delete_user(element.id).subscribe(
-          result => {
-              this.toast.show('success', "Sucesso!", 'Usuário deletado com sucesso!');
-              this.findAllUsers();
-          },
-          error => {
-              this.toast.show('error', "Erro!", error.error.detail || 
-                'Ocorreu um erro, tente novamente')
-          }
-        );
-      }
-    });
+  deleteItem(){
+    if(this.modal.id){
+      this.userService.delete_user(this.modal.id).subscribe(
+        result => {
+            this.toast.show('success', "Sucesso!", 'UsuÃ¡rio deletado com sucesso!');
+            this.findAllUsers();
+            this.closeModal()
+        },
+        error => {
+            this.toast.show('error', "Erro!", error.error.detail || 
+              'Ocorreu um erro, tente novamente')
+        }
+      );
+    }
+    
   }
 
   generateExcel(): void {

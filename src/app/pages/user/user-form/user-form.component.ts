@@ -3,11 +3,11 @@ import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ValidateService } from '../../../services/validate.service';
 import { CepService } from '../../../services/cep.service';
 import { ToastService } from '../../../services/toast';
@@ -30,19 +30,39 @@ import { UserService } from '../../../services/user.service';
   styleUrl: './user-form.component.scss'
 })
 export class UserFormComponent {
+  id = '';
   formControls!: FormGroup;
   enderecoControls!: FormGroup;
-  constructor(private validateService: ValidateService, private cepService: CepService, private router: Router, private toast: ToastService, private userService:  UserService) {
+  item = {}
+  constructor(
+    private validateService: ValidateService, 
+    private cepService: CepService, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    private toast: ToastService, 
+    private location: Location,
+    private userService:  UserService) {
   }
 
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+       this.id = params['id'];
+
+       if(this.id){
+          this.getUserById(this.id)
+       }
+       // if(params['tela'] == 'visualizar'){
+       //  this.view = true;
+       // }
+    });
+
     this.formControls = new FormGroup({
       cpf: new FormControl('', [Validators.required, this.validateService.validateCPF]),
       nome: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       telefone: new FormControl('', [Validators.required,  Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]),
-      senha: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)]),
-      confirmSenha: new FormControl('', [Validators.required, this.compararSenhas.bind(this)]),
+      senha: new FormControl('', this?.id ? [] : [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)]),
+      confirmSenha: new FormControl('', this?.id ? [] : [Validators.required, this.compararSenhas.bind(this)]),
     });
 
     this.enderecoControls = new FormGroup({
@@ -54,6 +74,100 @@ export class UserFormComponent {
       cidade: new FormControl('', Validators.required),
       uf: new FormControl('', Validators.required),
     });
+
+    const senhaControl = this.formControls.get('senha');
+    const confirmSenhaControl = this.formControls.get('confirmSenha');
+
+    senhaControl?.valueChanges.subscribe((senha) => {
+      if (senha && senha.length > 0) {
+        senhaControl.setValidators([
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
+        ]);
+
+        confirmSenhaControl?.setValidators([
+          Validators.required,
+          Validators.minLength(8),
+          this.compararSenhas.bind(this)
+        ]);
+      } else {
+        senhaControl.clearValidators();
+        confirmSenhaControl?.clearValidators();
+      }
+
+      senhaControl.updateValueAndValidity();
+      confirmSenhaControl?.updateValueAndValidity();
+    });
+  }
+  
+  getUserById(id: string): void{
+    this.userService.get_user_by_id(id).subscribe(
+          data => {
+            this.item = data;
+
+            this.formControls?.patchValue({
+              cpf: data.cpf || '',
+              nome: data.nome || '',
+              email: data.email || '',
+              telefone: data.telefone || '',
+              senha: '',
+              confirmSenha: '',
+            });
+
+            this.enderecoControls?.patchValue({
+              cep: data?.endereco?.cep || '',
+              numero: data?.endereco?.numero || '',
+              complemento: data?.endereco?.complemento || '',
+              rua: data?.endereco?.rua || '',
+              bairro: data?.endereco?.bairro || '',
+              cidade: data?.endereco?.cidade || '',
+              uf: data?.endereco?.uf || '',
+            });
+          },
+          error => {
+            this.toast.show('error', "Erro!", typeof error?.error?.detail === 'string' ? error.error.detail : 
+                'Usuario não localizado!')
+            this.location.back();
+          }
+    );
+  }
+
+  update(): void {
+    if (this.formControls.valid && this.enderecoControls.valid) {
+      let data: any = {
+        cpf:  this.formControls?.get('cpf')?.value,
+        nome: this.formControls?.get('nome')?.value,
+        email: this.formControls?.get('email')?.value,
+        telefone: this.formControls?.get('telefone')?.value,
+        endereco: this.enderecoControls.getRawValue()
+      };
+
+      if(this.formControls?.get('senha')?.value?.length > 0){
+          if(this.formControls?.get('senha')?.value == this.formControls?.get('confirmSenha')?.value){
+            data.senha = this.formControls?.get('senha')?.value;
+          }else{
+            this.toast.show('error', "Erro!",'Senhas não batem.');
+            return;
+          }
+      }
+
+      this.userService.edit_user(this.id, data).subscribe(
+        data => {
+          this.toast.show('success', "Sucesso!",'Usuário criado com sucesso!');
+          this.location.back();
+        },
+        error => {
+          console.error(error.error.detail);
+            this.toast.show('error', "Erro!", error.error.detail || 
+              'Ocorreu um erro, tente novamente')
+        }
+      );
+    }else{
+      this.formControls.markAllAsTouched();
+      this.enderecoControls.markAllAsTouched();
+      this.toast.show('error', "Erro!",'Preencha todos os dados!');
+    }
   }
 
   create(): void {
@@ -68,15 +182,15 @@ export class UserFormComponent {
       };
 
       this.userService.create_user(data).subscribe(
-            data => {
-              this.toast.show('success', "Sucesso!",'Usuário criado com sucesso!');
-               this.router.navigate(['/login']);
-            },
-            error => {
-              console.error(error.error.detail);
-                this.toast.show('error', "Erro!", error.error.detail || 
-                  'Ocorreu um erro, tente novamente')
-            }
+        data => {
+          this.toast.show('success', "Sucesso!",'Usuário criado com sucesso!');
+          this.location.back();
+        },
+        error => {
+          console.error(error.error.detail);
+            this.toast.show('error', "Erro!", error.error.detail || 
+              'Ocorreu um erro, tente novamente')
+        }
       );
       
     } else {
@@ -106,10 +220,12 @@ export class UserFormComponent {
           .subscribe(
             data => {
               if(!data.erro){
-                this.enderecoControls?.get('rua')?.setValue(data.logradouro);
-                this.enderecoControls?.get('bairro')?.setValue(data.bairro);
-                this.enderecoControls?.get('cidade')?.setValue(data.localidade)
-                this.enderecoControls?.get('uf')?.setValue(data.uf)
+                this.enderecoControls?.patchValue({
+                  rua: data.logradouro,
+                  bairro: data.bairro,
+                  cidade: data.localidade,
+                  uf: data.uf
+                });
               }else{
                 this.toast.show('error', "Erro!",'Cep não localizado!');
                 this.limparEndereco();
@@ -124,10 +240,12 @@ export class UserFormComponent {
   }
 
   limparEndereco(){
-    this.enderecoControls?.get('rua')?.setValue("");
-    this.enderecoControls?.get('bairro')?.setValue("");
-    this.enderecoControls?.get('cidade')?.setValue("");
-    this.enderecoControls?.get('uf')?.setValue("")
+     this.enderecoControls?.patchValue({
+      rua: '',
+      bairro: '',
+      cidade: '',
+      uf: '',
+    });
   }
 
 
@@ -143,6 +261,6 @@ export class UserFormComponent {
   }
 
   backPage(){
-    this.router.navigate(['/login']);
+    this.location.back();
   }
 }

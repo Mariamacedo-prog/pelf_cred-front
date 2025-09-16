@@ -1,12 +1,23 @@
-<div class="dialog-content">
-  <div mat-dialog-title class="dialog-title">
-    {{title}}
-  </div>
-  <div mat-dialog-content>
-    <p style="padding: 5px; ">{{text}}</p>
-  </div>
-  <div mat-dialog-actions class="buttonArea">
-    <button class="positiveButton" (click)="onYesClick()" color="primary">{{positiveButton}}</button>
-    <button class="negativeButton" (click)="onCancelClick()" color="primary">{{negativeButton}}</button>
+<div class="modal-backdrop" *ngIf="show" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header" [ngClass]="{'modal-success': type == 'success', 'modal-error': type == 'error', 'modal-warming': type == 'warming'}">
+      <button class="close-button" (click)="onClose()">×</button>
+      <mat-icon class="modal-icon" *ngIf="type == 'success'">check_circle</mat-icon>
+      <mat-icon class="modal-icon" *ngIf="type == 'warming'">warning</mat-icon>
+      <mat-icon class="modal-icon" *ngIf="type == 'error'">error</mat-icon>
+      <div class="modal-title" *ngIf="title">
+        {{title}}
+      </div>
+    </div>
+    <ng-content></ng-content>
+    <div class="modal-body">
+      <div class="modal-text" *ngIf="text">
+        <p>{{text}}</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="positiveButton" (click)="onPositiveClick()" color="primary">{{positiveButton}}</button>
+      <button class="negativeButton" (click)="onCancelClick()" color="primary">{{negativeButton}}</button>
+    </div>
   </div>
 </div>

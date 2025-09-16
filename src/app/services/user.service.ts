@@ -41,6 +41,14 @@ export class UserService {
     });
   }
 
+  get_user_by_id(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/user/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+  }
+
   delete_user(id = null): Observable<any> {
     return this.http.delete(`${this.baseUrl}/user/${id}`, {
       headers: {
@@ -50,6 +58,10 @@ export class UserService {
   }
   
   edit_user(id: string, data: any): Observable<any> {
-     return this.http.put(`${this.baseUrl}/user/${id}`, data);
+     return this.http.put(`${this.baseUrl}/user/${id}`, data, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
   }
 }

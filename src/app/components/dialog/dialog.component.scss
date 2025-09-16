@@ -1,54 +1,112 @@
-.negativeButton{
-  margin: 10px;
-  width: 100%;
-  border: none;
-  padding: 10px;
-  background-color: var(--main-error-red-l);
-  transition: all ease 1s;
-  color: var(--main-white);
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.negativeButton:hover{
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  position: relative;
+  min-width: 300px;
+  max-width: 500px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.close-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: var(--main-white);
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--main-white);
+  margin: 0px;
+  padding: 20px 0px;
+  .modal-icon{
+    font-size: 55px; 
+    width: 55px;
+    height: 55px;
+    padding: 20px;
+  }
+  .modal-title{
+    font-size: 18px;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+  }
+}
+
+.modal-success{
+  background-color: var(--main-success-green);
+}
+
+.modal-error{
   background-color: var(--main-error-red);
 }
 
-.dialog-content{
+.modal-warming{
+  background-color: var(--main-warming-yellow);
+}
+
+
+.modal-body{
+  padding: 20px;
+  .modal-text{
+    font-size: 16px;
+    color: var(--main-gray-dark);
+  }
+}
+
+.modal-footer{
   display: flex;
-  flex-direction: column ;
-}
-
-.mat-mdc-dialog-container {
-  width: auto !important;
-}
-
-.dialog-title {
-  background-color: var(--main-primary-medium); 
   align-items: center;
-  display: flex;
-  flex-direction: column;
-  color: var(--main-white); 
-  padding: 10px 5px;
-}
-
-.positiveButton{
-  margin: 10px;
+  justify-content:space-between;
   width: 100%;
-  border: none;
-  padding: 10px;
-  transition: all ease 0.3s;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
+  .positiveButton, .negativeButton{
+    padding: 10px;
+    margin: 5px;
+    border-radius: 12px;
+    width: 50%;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .negativeButton{
+    color: var(--main-error-red);
+    border: 2px solid var(--main-error-red);
+     transition: all ease 0.4s;
+  }
+  .positiveButton{
+    color: var(--main-success-green);
+    border: 2px solid var(--main-success-green);
+     transition: all ease 0.4s;
+  }
+
+  .negativeButton:hover{
+    color: var(--main-white);
+    background-color: var(--main-error-red);
+  }
+  .positiveButton:hover{
+    color: var(--main-white);
+    background-color: var(--main-success-green);
+  }
 }
 
-.positiveButton:hover{
-  background-color: var(--main-primary-medium);
-  color: var(--main-white);
-}
-
-.buttonArea{
-  display: flex;
-}

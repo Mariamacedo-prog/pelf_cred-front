@@ -46,7 +46,7 @@
         <button *ngIf="this.access === 'total'" class="icon-green" mat-icon-button (click)="editItem(element)">
           <mat-icon >edit</mat-icon>
         </button>
-        <button *ngIf="this.access === 'total'" class="icon-red" mat-icon-button  (click)="deleteItem(element)">
+        <button *ngIf="this.access === 'total'" class="icon-red" mat-icon-button (click)="openModal(element)">
           <mat-icon >delete</mat-icon>
         </button>
       </td>
@@ -55,6 +55,10 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+
+  <app-dialog title="Atenção!" [text]="modal.text" type="warming" [show]="modal.status" (close)="closeModal()" (positiveClick)="deleteItem()">
+  </app-dialog>
+
   <mat-paginator
     *ngIf="!loading"
     [length]="length" 

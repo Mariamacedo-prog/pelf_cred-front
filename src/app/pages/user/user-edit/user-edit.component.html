@@ -2,13 +2,14 @@
   <mat-card class="card-form">
 
     <mat-card-header>
-      <mat-card-title *ngIf="id">Usuário</mat-card-title>
-      <mat-card-title *ngIf="!id">Novo Usuário</mat-card-title>
+      <mat-card-title>Cadastro de Usuário</mat-card-title>
     </mat-card-header>
 
     <form [formGroup]="formControls">
 
       <mat-card-content>
+
+        <!-- Nome -->
         <div class="row">
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>Nome do Usuário</mat-label>
@@ -19,6 +20,7 @@
           </mat-form-field>
         </div>
 
+        <!-- E-mail, Telefone, CPF -->
         <div class="row">
           <mat-form-field appearance="fill">
             <mat-label>E-mail</mat-label>
@@ -53,6 +55,7 @@
           </mat-form-field>
         </div>
 
+        <!-- Senha e Confirmação -->
         <div class="row">
           <mat-form-field appearance="fill">
             <mat-label>Senha</mat-label>
@@ -79,6 +82,7 @@
 
       </mat-card-content>
 
+      <!-- Endereço -->
       <mat-card-content [formGroup]="enderecoControls">
         <mat-divider class="section-divider"></mat-divider>
         <mat-card-title>Endereço</mat-card-title>
@@ -141,10 +145,10 @@
         </div>
       </mat-card-content>
 
+      <!-- Botões -->
       <div class="button-area">
-        <button mat-raised-button color="primary" *ngIf="id" (click)="update()">Atualizar</button>
-        <button mat-raised-button color="primary" *ngIf="!id" (click)="create()">Cadastrar</button>
-        <button mat-stroked-button color="accent" (click)="backPage()">Voltar</button>
+        <button mat-raised-button color="primary" (click)="create()">Cadastrar</button>
+        <a mat-stroked-button color="accent" [routerLink]="['/login']">Voltar</a>
       </div>
     </form>
   </mat-card>
