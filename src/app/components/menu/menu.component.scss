@@ -4,6 +4,15 @@ nav {
   padding: 10px;
 
 }
+
+.logo {
+  background-image: url("../../../assets/img/Marca_dagua_3_Logo.png");
+  width: 200px;
+  height: 40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .headerAreaMenu{
   display: flex;
   flex-direction: column;
@@ -59,9 +68,15 @@ a:hover {
 .footerAreaMenu{
   justify-self: flex-end;
 }
+
 .logoIconMenu{
   display: flex;
-  padding-right: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoIconSair{
+  display: flex;
   p{
     margin-top: 2px;
     margin-left: 15px;

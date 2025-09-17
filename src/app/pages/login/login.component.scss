@@ -27,12 +27,12 @@ button {
     width: 100%;
     margin-top: 10px;
     border-radius: 15px;
-    background-color: #0090B3 !important;
+    background-color: var(--main-primary)  !important;
     transition: all ease 0.4s;
 }
 
 button:hover {
-    background-color: #015068 !important;
+    background-color:var(--main-primary-medium) !important;
 }
 
 .login-links {
@@ -43,7 +43,7 @@ button:hover {
 
 .login-links a {
     text-decoration: none;
-    color: #4267b2; /* Cor do link semelhante à do Facebook */
+    color: #4267b2;
 }
 
 .divider {

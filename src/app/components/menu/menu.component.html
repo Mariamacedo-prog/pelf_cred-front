@@ -3,7 +3,7 @@
   <div class="headerAreaMenu">  
     <div class="logoIconMenu"> 
       <mat-icon (click)="toggleMenu()">menu</mat-icon> 
-      <p *ngIf="isMenuOpen">PELF CRED</p>  
+      <div *ngIf="isMenuOpen" class="logo"></div>  
     </div>
 
   
@@ -19,7 +19,10 @@
   </ul>
 
   <div class="footerAreaMenu">  
-    <div  class="logoIconMenu" (click)="logout()">	<mat-icon>keyboard_tab</mat-icon>  <p *ngIf="isMenuOpen">SAIR</p>   </div>
+    <div class="logoIconSair" (click)="logout()">	
+      <mat-icon>keyboard_tab</mat-icon>  
+      <p *ngIf="isMenuOpen">SAIR</p>  
+     </div>
   </div> 
 </nav> 
 

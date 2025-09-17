@@ -1,21 +1,21 @@
-import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastService } from '../../../services/toast';
-import { UserService } from '../../../services/user.service';
-import { AuthService } from '../../../services/auth';
 import { CommonModule } from '@angular/common';
-import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
-import { MatIconModule } from '@angular/material/icon';
-import {MatTableModule} from '@angular/material/table';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 import { DialogComponent } from '../../../components/dialog/dialog.component';
+import { Router, RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { ToastService } from '../../../services/toast';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthService } from '../../../services/auth';
+import { UserService } from '../../../services/user.service';
 
 @Component({
-  selector: 'app-user-grid',
+  selector: 'app-client-grid',
   imports: [CommonModule, 
     MatPaginatorModule, 
     MatIconModule,
@@ -26,15 +26,15 @@ import { DialogComponent } from '../../../components/dialog/dialog.component';
     DialogComponent,
     RouterModule, 
     MatButtonModule],
-  templateUrl: './user-grid.component.html',
-  styleUrl: './user-grid.component.scss'
+  templateUrl: './client-grid.component.html',
+  styleUrl: './client-grid.component.scss'
 })
-export class UserGridComponent {
+export class ClientGridComponent {
   access = 'total';
   private typingTimer: any;
   loading = false;
 
-  displayedColumns: string[] = ['nome', 'cpf', 'telefone', 'email', 'actions'];
+  displayedColumns: string[] = ['nome', 'documento', 'endereco', 'telefone', 'email', 'status', 'actions'];
   data = [];
   searchTerm: string = '';
   items = 1;
@@ -77,44 +77,27 @@ export class UserGridComponent {
     this.modal.id = null;
   }
   
-  addNewUser() {
-    this.router.navigate(["/usuario/novo"]);
+  addNew() {
+    this.router.navigate(["/cliente/novo"]);
   }
 
 
   ngOnInit(): void {
-    this.findAllUsers();
-    
+    this.findAll();
   }
   
-  findUser(event:any) {
+  find(event:any) {
     const input = (event.target as HTMLInputElement).value;
     this.loading = true;
     clearTimeout(this.typingTimer);
 
     this.typingTimer = setTimeout(() => {
-     this.findAllUsers()
+     this.findAll()
      this.loading =false
     }, 2000);
   }
-
-  handlePageEvent(event: any){
-    this.pageEvent = event;
-    this.length = event.length;
-    this.pageSize = event.pageSize;
-    this.pageIndex =event.pageIndex;
-    this.findAllUsers()
-  }
   
-  viewItem(element: any){
-    this.router.navigate(["/usuario/form/" + element.id + "/visualizar"]);
-  }
-
-  editItem(element: any){
-    this.router.navigate(["/usuario/form/" + element.id]);
-  }
-
-  findAllUsers(){
+  findAll(){
     this.userService.list_all_users(this.searchTerm, this.pageIndex + 1, this.pageSize).subscribe(
         result => {
             this.data = result?.data ?? []
@@ -128,10 +111,12 @@ export class UserGridComponent {
     );
   }
 
-  openModal(element: any){
-    this.modal.status = true;
-    this.modal.text = `Confirma a exclusão do usuário "${element.nome}"?`;
-    this.modal.id = element.id;
+  viewItem(element: any){
+    this.router.navigate(["/usuario/form/" + element.id + "/visualizar"]);
+  }
+
+  editItem(element: any){
+    this.router.navigate(["/usuario/form/" + element.id]);
   }
 
   deleteItem(){
@@ -139,7 +124,7 @@ export class UserGridComponent {
       this.userService.delete_user(this.modal.id).subscribe(
         result => {
             this.toast.show('success', "Sucesso!", result.detail ?? 'Usuário deletado com sucesso!');
-            this.findAllUsers();
+            this.findAll();
             this.closeModal()
         },
         error => {
@@ -149,6 +134,22 @@ export class UserGridComponent {
       );
     }
     
+  }
+
+
+
+  handlePageEvent(event: any){
+    this.pageEvent = event;
+    this.length = event.length;
+    this.pageSize = event.pageSize;
+    this.pageIndex =event.pageIndex;
+    this.findAll()
+  }
+  
+  openModal(element: any){
+    this.modal.status = true;
+    this.modal.text = `Confirma a exclusão do usuário "${element.nome}"?`;
+    this.modal.id = element.id;
   }
 
   generateExcel(): void {

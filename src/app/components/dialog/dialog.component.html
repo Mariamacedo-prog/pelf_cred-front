@@ -16,8 +16,8 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="positiveButton" (click)="onPositiveClick()" color="primary">{{positiveButton}}</button>
-      <button class="negativeButton" (click)="onCancelClick()" color="primary">{{negativeButton}}</button>
+      <button *ngIf="showPositiveButton" class="positiveButton" (click)="onPositiveClick()" color="primary">{{positiveButton}}</button>
+      <button *ngIf="showNegativeButton" class="negativeButton" (click)="onCancelClick()" color="primary">{{negativeButton}}</button>
     </div>
   </div>
 </div>

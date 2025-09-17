@@ -154,7 +154,7 @@ export class UserFormComponent {
 
       this.userService.edit_user(this.id, data).subscribe(
         data => {
-          this.toast.show('success', "Sucesso!",'Usuário criado com sucesso!');
+          this.toast.show('success', "Sucesso!", data.detail ?? 'Usuário criado com sucesso!');
           this.location.back();
         },
         error => {

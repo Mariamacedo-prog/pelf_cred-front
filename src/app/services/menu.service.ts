@@ -5,10 +5,11 @@ import { Injectable } from '@angular/core';
 })
 export class MenuService {
   menu = [
-    {"icon": "group", "value": "usuario", "label": "Usuários", "route": "/usuario/lista", id: 1, principal: false}, 
+    {"icon": "group", "value": "usuario", "label": "Usuários", "route": "/usuario/lista", id: 1, principal: false},
+    {"icon": "tag_faces", "value": "cliente", "label": "Clientes", "route": "/cliente/lista", id: 2, principal: false}, 
    // {"icon": "how_to_reg", "value": "acesso", "label": "Acessos", "route": "/acesso/lista", id: 2, principal: false},
    // {"icon": "account_box", "value": "funcionario", "label": "Funcionários", "route": "/funcionario/lista", id: 3, principal: false},
-   //  {"icon": "tag_faces", "value": "contratante", "label": "Contratante", "route": "/contratante/lista", id: 4, principal: false},
+   
    //  {"icon": "location_city", "value": "imovel", "label": "Imóvel", "route": "/imovel/lista", id: 5, principal: false},
    //  {"icon": "nature_people", "value": "vendedor", "label": "Vendedores / Corretores", "route": "/vendedor/lista", id: 6, principal: false},
    //  {"icon": "flag", "label": "Prefeitura", "value": "prefeitura", "route": "/prefeitura/lista", id: 7, principal: false},

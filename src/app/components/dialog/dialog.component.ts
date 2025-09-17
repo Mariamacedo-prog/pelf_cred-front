@@ -17,11 +17,14 @@ export class DialogComponent {
   @Input() title = 'Atenção';
   @Input() positiveButton = 'Sim';
   @Input() negativeButton = 'Cancelar';
+  @Input() showPositiveButton = true;
+  @Input() showNegativeButton = true;
   @Input() type: 'warming' | 'success' | 'error' = 'warming';
 
   @Input() show = false;
   @Output() close = new EventEmitter<void>();
   @Output() positiveClick = new EventEmitter<void>();
+  @Output() negativeClick = new EventEmitter<void>();
 
   onClose() {
     this.close.emit();
@@ -38,7 +41,6 @@ export class DialogComponent {
   }
 
   onCancelClick(): void {
-    this.close.emit();
-    this.show = false;
+    this.negativeClick.emit();
   }
 }
