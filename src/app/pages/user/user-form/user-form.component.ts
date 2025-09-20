@@ -31,6 +31,7 @@ import { UserService } from '../../../services/user.service';
 })
 export class UserFormComponent {
   id = '';
+  view = false;
   formControls!: FormGroup;
   enderecoControls!: FormGroup;
   item = {}
@@ -51,9 +52,10 @@ export class UserFormComponent {
        if(this.id){
           this.getUserById(this.id)
        }
-       // if(params['tela'] == 'visualizar'){
-       //  this.view = true;
-       // }
+
+       if(params['tela'] == 'visualizar'){
+        this.view = true;
+       }
     });
 
     this.formControls = new FormGroup({
@@ -124,6 +126,9 @@ export class UserFormComponent {
               cidade: data?.endereco?.cidade || '',
               uf: data?.endereco?.uf || '',
             });
+
+            this.formatarTelefone();
+            this.formatarCpf();
           },
           error => {
             this.toast.show('error', "Erro!", typeof error?.error?.detail === 'string' ? error.error.detail : 
@@ -136,10 +141,10 @@ export class UserFormComponent {
   update(): void {
     if (this.formControls.valid && this.enderecoControls.valid) {
       let data: any = {
-        cpf:  this.formControls?.get('cpf')?.value,
+        cpf:  this.formControls?.get('cpf')?.value.replace(/\D/g, ''),
         nome: this.formControls?.get('nome')?.value,
         email: this.formControls?.get('email')?.value,
-        telefone: this.formControls?.get('telefone')?.value,
+        telefone: this.formControls?.get('telefone')?.value.replace(/\D/g, ''),
         endereco: this.enderecoControls.getRawValue()
       };
 
@@ -173,10 +178,10 @@ export class UserFormComponent {
   create(): void {
     if (this.formControls.valid && this.enderecoControls.valid) {
       let data = {
-        cpf:  this.formControls?.get('cpf')?.value,
+        cpf:  this.formControls?.get('cpf')?.value.replace(/\D/g, ''),
         nome: this.formControls?.get('nome')?.value,
         email: this.formControls?.get('email')?.value,
-        telefone: this.formControls?.get('telefone')?.value,
+        telefone: this.formControls?.get('telefone')?.value.replace(/\D/g, ''),
         senha: this.formControls?.get('senha')?.value,
         endereco: this.enderecoControls.getRawValue()
       };
@@ -211,6 +216,19 @@ export class UserFormComponent {
       }
     }
   }
+
+  formatarCpf() {
+    if(this.formControls.get('cpf')?.value){
+      let cpf = this.formControls.get('cpf')?.value.replace(/\D/g, '');
+
+      if (cpf.length === 11) {
+        this.formControls.get('cpf')?.setValue(`${cpf.substring(0, 3)}.${cpf.substring(3, 6)}.${cpf.substring(6, 9)}-${cpf.substring(9)}`);
+      } else {
+          this.formControls.get('cpf')?.setValue(cpf);
+      }
+    }
+  }
+
 
   buscarEndereco() {
     if(this.enderecoControls?.get('cep')?.value){

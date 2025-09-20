@@ -12,7 +12,7 @@
         <div class="row">
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>Nome do Usuário</mat-label>
-            <input matInput formControlName="nome" />
+            <input [readonly]="view" matInput formControlName="nome" />
             <mat-error *ngIf="formControls.get('nome')?.hasError('required')">
                 Este campo é <strong>obrigatório</strong>
             </mat-error>
@@ -22,7 +22,7 @@
         <div class="row">
           <mat-form-field appearance="fill">
             <mat-label>E-mail</mat-label>
-            <input matInput formControlName="email" />
+            <input [readonly]="view" matInput formControlName="email" />
             <mat-error *ngIf="formControls.get('email')?.hasError('required')">
                 Este campo é <strong>obrigatório</strong>
             </mat-error>
@@ -34,7 +34,7 @@
 
           <mat-form-field appearance="fill" (input)="formatarTelefone()">
             <mat-label>Telefone</mat-label>
-            <input matInput formControlName="telefone" />
+            <input [readonly]="view" matInput formControlName="telefone" />
             <mat-error *ngIf="formControls.get('telefone')?.hasError('pattern')">
                 Por favor digite um telefone válido.
             </mat-error>
@@ -43,9 +43,9 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="fill">
+          <mat-form-field appearance="fill" (input)="formatarCpf()">
             <mat-label>CPF</mat-label>
-            <input matInput formControlName="cpf" />
+            <input [readonly]="view" matInput formControlName="cpf" />
             <mat-error *ngIf="formControls.get('cpf')?.hasError('required')">
                 Este campo é <strong>obrigatório</strong>
             </mat-error>
@@ -53,7 +53,7 @@
           </mat-form-field>
         </div>
 
-        <div class="row">
+        <div class="row" *ngIf="!view">
           <mat-form-field appearance="fill">
             <mat-label>Senha</mat-label>
             <input matInput type="password" formControlName="senha" />
@@ -86,21 +86,21 @@
         <div class="row">
           <mat-form-field appearance="fill">
             <mat-label>CEP</mat-label>
-                <input matInput formControlName="cep"  (keyup)="buscarEndereco()" maxlength="8"/>
+                <input [readonly]="view" matInput formControlName="cep"  (keyup)="buscarEndereco()" maxlength="8"/>
                 <mat-error *ngIf="enderecoControls.get('cep')?.hasError('required')">
                     Este campo é <strong>obrigatório</strong>
                 </mat-error>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>UF</mat-label>
-                <input matInput formControlName="uf" />
+                <input [readonly]="view" matInput formControlName="uf" />
                 <mat-error *ngIf="enderecoControls.get('uf')?.hasError('required')">
                     Este campo é <strong>obrigatório</strong>
                 </mat-error>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>Cidade</mat-label>
-                <input matInput formControlName="cidade" />
+                <input [readonly]="view" matInput formControlName="cidade" />
                 <mat-error *ngIf="enderecoControls.get('cidade')?.hasError('required')">
                     Este campo é <strong>obrigatório</strong>
                 </mat-error>
@@ -110,7 +110,7 @@
         <div class="row">
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>Rua</mat-label>
-            <input matInput formControlName="rua" />
+            <input [readonly]="view" matInput formControlName="rua" />
             <mat-error *ngIf="enderecoControls.get('rua')?.hasError('required')">
                 Este campo é <strong>obrigatório</strong>
             </mat-error>
@@ -120,7 +120,7 @@
         <div class="row">
           <mat-form-field appearance="fill">
             <mat-label>Número</mat-label>
-            <input matInput formControlName="numero" />
+            <input [readonly]="view" matInput formControlName="numero" />
             <mat-error *ngIf="enderecoControls.get('numero')?.hasError('required')">
                 Este campo é <strong>obrigatório</strong>
             </mat-error>
@@ -128,7 +128,7 @@
 
           <mat-form-field appearance="fill">
             <mat-label>Bairro</mat-label>
-            <input matInput formControlName="bairro" />
+            <input [readonly]="view" matInput formControlName="bairro" />
             <mat-error *ngIf="enderecoControls.get('bairro')?.hasError('required')">
                 Este campo é <strong>obrigatório</strong>
             </mat-error>
@@ -136,13 +136,13 @@
 
           <mat-form-field appearance="fill">
             <mat-label>Complemento</mat-label>
-            <input matInput formControlName="complemento" />
+            <input [readonly]="view" matInput formControlName="complemento" />
           </mat-form-field>
         </div>
       </mat-card-content>
 
       <div class="button-area">
-        <button mat-raised-button color="primary" *ngIf="id" (click)="update()">Atualizar</button>
+        <button class="button-primary" mat-raised-button color="primary" *ngIf="id && !view" (click)="update()">Atualizar</button>
         <button class="button-primary" mat-raised-button color="primary" *ngIf="!id" (click)="create()">Cadastrar</button>
         <button mat-stroked-button color="accent" (click)="backPage()">Voltar</button>
       </div>

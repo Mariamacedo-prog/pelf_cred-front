@@ -1,13 +1,38 @@
 <div class="page-container">
-  <h1>Listagem de Clientes</h1>
-  <div class="header">
-    <mat-form-field class="search-field">
-      <input matInput placeholder="Pesquisar por Nome ou CPF" [(ngModel)]="searchTerm" (keyup)="find($event)" />
-      <mat-icon matPrefix>search</mat-icon>
-    </mat-form-field>
-    <button *ngIf="this.access !== 'restrito'"  style="margin-top:10px; margin-left: 20px;" class="icon-blue" mat-icon-button (click)="generateExcel()"> <mat-icon >download</mat-icon></button>
-    <button class="button-primary" *ngIf="this.access !== 'restrito'" style="margin-top:17px;" mat-raised-button color="primary"  (click)="addNew()">Novo Cliente</button>
+  <div class="content-header">
+    <h1>Listagem de Clientes</h1>
+    <div class="header-grid">
+      <mat-form-field class="search-field">
+        <input matInput placeholder="Pesquisar por Nome ou Documento" [(ngModel)]="searchTerm" (keyup)="find($event)" />
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="searchStatus" name="status" (selectionChange)="findAll()">
+          <mat-option [value]="null">Todos</mat-option>
+          <mat-option [value]="false">Ativado</mat-option>
+          <mat-option [value]="true">Desativado</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Data Criação</mat-label>
+        <input matInput 
+          [(ngModel)]="searchDate"
+          (dateChange)="findAll()"
+          placeholder="DD/MM/YYYY"
+          [matDatepicker]="picker"
+        >
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="buttons-area">
+      <button *ngIf="this.access !== 'restrito'"  class="icon-blue" mat-icon-button (click)="generateExcel()"> <mat-icon >download</mat-icon></button>
+      <button mat-stroked-button color="accent" (click)="clearSearch()">Limpar Filtro</button>
+      <button class="button-primary" *ngIf="this.access !== 'restrito'"  mat-raised-button color="primary"  (click)="addNew()">Novo Cliente</button>
+    </div>
   </div>
+
 
   <!--  
     <div *ngIf="loading" class="loading-overlay">
@@ -26,12 +51,18 @@
       <td mat-cell *matCellDef="let element" > {{element.nome}} </td>
     </ng-container>
     <ng-container matColumnDef="documento">
-      <th mat-header-cell *matHeaderCellDef > CPF/CNPJ </th>
-      <td mat-cell *matCellDef="let element"> {{element.cpf}} </td>
+      <th mat-header-cell *matHeaderCellDef > Documento </th>
+      <td mat-cell *matCellDef="let element"> {{element.documento}} </td>
     </ng-container>
     <ng-container matColumnDef="endereco" >
       <th mat-header-cell *matHeaderCellDef >Endereço </th>
-      <td mat-cell *matCellDef="let element" > {{element.email}} </td>
+      <td mat-cell *matCellDef="let element" class="wrap-cell"> 
+        {{ element?.endereco?.rua?.length > 30 ? (element.endereco.rua | slice:0:30) + '...' : element.endereco.rua }}
+        <br/>
+        {{element?.endereco?.numero ? 'nº: ' + element?.endereco?.numero  : ''}}  {{element?.endereco?.complemento ? + element?.endereco?.complemento  : ''}} 
+        <br/>
+        {{element?.endereco?.cidade ? element?.endereco?.cidade + ' / ' : ''}}{{element?.endereco?.uf}}
+      </td>
     </ng-container>
     <ng-container matColumnDef="telefone" >
       <th mat-header-cell *matHeaderCellDef >Telefone</th>
@@ -43,18 +74,18 @@
     </ng-container>
     <ng-container matColumnDef="status" >
       <th mat-header-cell *matHeaderCellDef >Status</th>
-      <td mat-cell *matCellDef="let element" > {{element.telefone}} </td>
+      <td mat-cell *matCellDef="let element" > {{element.disabled ? 'Desativado' : 'Ativado'}} </td>
     </ng-container>
     <ng-container matColumnDef="actions" class="">
       <th mat-header-cell *matHeaderCellDef > Ações </th>
       <td mat-cell *matCellDef="let element" >
-        <button *ngIf="this.access !== 'restrito'" class="icon-blue" mat-icon-button (click)="viewItem(element)">
+        <button *ngIf="this.access !== 'restrito'" class="icon-visualizar" mat-icon-button (click)="viewItem(element)">
           <mat-icon >visibility</mat-icon>
         </button>
-        <button *ngIf="this.access === 'total'" class="icon-green" mat-icon-button (click)="editItem(element)">
+        <button *ngIf="this.access === 'total'" class="icon-editar" mat-icon-button (click)="editItem(element)">
           <mat-icon >edit</mat-icon>
         </button>
-        <button *ngIf="this.access === 'total'" class="icon-red" mat-icon-button (click)="openModal(element)">
+        <button *ngIf="this.access === 'total' && element.deleted_at == null"class="icon-excluir" mat-icon-button (click)="openModal(element)">
           <mat-icon >delete</mat-icon>
         </button>
       </td>

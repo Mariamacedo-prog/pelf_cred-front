@@ -3,9 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { MenuComponent } from './components/menu/menu.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth';
-import { Store, StoreModule } from '@ngrx/store';
-import { authReducer, AuthState } from './services/storage.service';
-import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-root',

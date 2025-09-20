@@ -1,1 +1,143 @@
-<p>client-form works!</p>
+
+
+
+ <div class="container-form">
+  <mat-card class="card-form">
+    <mat-card-header>
+      <mat-card-title *ngIf="id">Cliente / Empresa</mat-card-title>
+      <mat-card-title *ngIf="!id">Novo Cliente / Empresa</mat-card-title>
+    </mat-card-header>
+
+
+     <mat-tab-group >
+      <mat-tab label="Informações" class="tab-1" >
+         <mat-card-content [formGroup]="formControls">
+
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>{{label.documento}}</mat-label>
+                  <input [readonly]="view" matInput formControlName="documento" (keyup)="documentoLabel()" />
+                  <mat-error *ngIf="formControls.get('documento')?.hasError('required')">
+                     Este campo é <strong>obrigatório</strong>
+                  </mat-error>
+                  <mat-error *ngIf="formControls.get('documento')?.hasError('documentoInvalido') && !formControls.get('documento')?.hasError('required')">Documento inválido</mat-error>
+               </mat-form-field>
+               <button *ngIf="this.formControls.get('documento')?.value?.length == 14 && !formControls.get('documento')?.hasError('documentoInvalido')" mat-stroked-button color="accent" (click)="getCnpjInfo()">Consultar CNPJ</button>
+            </div>
+
+            <div class="row">
+               <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>{{label.nome}}</mat-label>
+                  <input [readonly]="view" matInput formControlName="nome" />
+                  <mat-error *ngIf="formControls.get('nome')?.hasError('required')">
+                     Este campo é <strong>obrigatório</strong>
+                  </mat-error>
+               </mat-form-field>
+            </div>
+
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>E-mail</mat-label>
+                  <input [readonly]="view" matInput formControlName="email" />
+                  <mat-error *ngIf="formControls.get('email')?.hasError('required')">
+                     Este campo é <strong>obrigatório</strong>
+                  </mat-error>
+                  <mat-error *ngIf="formControls.get('email')?.hasError('email') && !formControls.get('email')?.hasError('required')">
+                     E-mail inválido.
+                  </mat-error>
+                  
+               </mat-form-field>
+            </div>
+
+            <div class="row">
+               <mat-form-field appearance="fill" (input)="formatarTelefone()">
+                  <mat-label>Telefone</mat-label>
+                  <input [readonly]="view" matInput formControlName="telefone" />
+                  <mat-error *ngIf="formControls.get('telefone')?.hasError('pattern')">
+                     Por favor digite um telefone válido.
+                  </mat-error>
+                  <mat-error *ngIf="formControls.get('telefone')?.hasError('required')">
+                     Este campo é <strong>obrigatório</strong>
+                  </mat-error>
+               </mat-form-field>
+
+               <mat-form-field appearance="fill">
+                  <mat-label>Grupo Segmento</mat-label>
+                  <input [readonly]="view" matInput formControlName="grupo_segmento" />
+               </mat-form-field>
+            </div>
+         </mat-card-content>
+      </mat-tab>
+      <mat-tab label="Endereço" class="tab-2">
+         <mat-card-content [formGroup]="enderecoControls">
+            <mat-card-title>Endereço</mat-card-title>
+
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>CEP</mat-label>
+                     <input [readonly]="view" matInput formControlName="cep"  (keyup)="buscarEndereco()" maxlength="8"/>
+                     <mat-error *ngIf="enderecoControls.get('cep')?.hasError('required')">
+                        Este campo é <strong>obrigatório</strong>
+                     </mat-error>
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                     <mat-label>UF</mat-label>
+                     <input [readonly]="view" matInput formControlName="uf" />
+                     <mat-error *ngIf="enderecoControls.get('uf')?.hasError('required')">
+                        Este campo é <strong>obrigatório</strong>
+                     </mat-error>
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                     <mat-label>Cidade</mat-label>
+                     <input [readonly]="view" matInput formControlName="cidade" />
+                     <mat-error *ngIf="enderecoControls.get('cidade')?.hasError('required')">
+                        Este campo é <strong>obrigatório</strong>
+                     </mat-error>
+                  </mat-form-field>
+            </div>
+
+            <div class="row">
+               <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Rua</mat-label>
+                  <input [readonly]="view" matInput formControlName="rua" />
+                  <mat-error *ngIf="enderecoControls.get('rua')?.hasError('required')">
+                     Este campo é <strong>obrigatório</strong>
+                  </mat-error>
+               </mat-form-field>
+            </div>
+
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>Número</mat-label>
+                  <input [readonly]="view" matInput formControlName="numero" />
+                  <mat-error *ngIf="enderecoControls.get('numero')?.hasError('required')">
+                     Este campo é <strong>obrigatório</strong>
+                  </mat-error>
+               </mat-form-field>
+
+               <mat-form-field appearance="fill">
+                  <mat-label>Bairro</mat-label>
+                  <input matInput formControlName="bairro" />
+                  <mat-error *ngIf="enderecoControls.get('bairro')?.hasError('required')">
+                     Este campo é <strong>obrigatório</strong>
+                  </mat-error>
+               </mat-form-field>
+
+               <mat-form-field appearance="fill">
+                  <mat-label>Complemento</mat-label>
+                  <input matInput formControlName="complemento" />
+               </mat-form-field>
+            </div>
+         </mat-card-content>
+      </mat-tab>
+   </mat-tab-group>
+
+ 
+   <div class="button-area">
+      <button mat-raised-button color="primary" *ngIf="id && !view" (click)="update()">Atualizar</button>
+      <button class="button-primary" mat-raised-button color="primary" *ngIf="!id" (click)="create()">Cadastrar</button>
+      <button mat-stroked-button color="accent" (click)="backPage()">Voltar</button>
+   </div>
+
+  </mat-card>
+</div>

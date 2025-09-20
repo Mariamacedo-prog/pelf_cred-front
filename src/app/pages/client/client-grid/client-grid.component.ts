@@ -4,27 +4,31 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { DialogComponent } from '../../../components/dialog/dialog.component';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { ToastService } from '../../../services/toast';
-import { MatDialog } from '@angular/material/dialog';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { AuthService } from '../../../services/auth';
-import { UserService } from '../../../services/user.service';
+import { ClientService } from '../../../services/client.service';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-client-grid',
   imports: [CommonModule, 
-    MatPaginatorModule, 
+    MatPaginatorModule,
     MatIconModule,
     FormsModule, 
     MatFormFieldModule, 
     MatTableModule, 
     MatInputModule,
     DialogComponent,
-    RouterModule, 
+    RouterModule,
+    MatSelectModule,
+    MatDatepickerModule,
     MatButtonModule],
   templateUrl: './client-grid.component.html',
   styleUrl: './client-grid.component.scss'
@@ -37,6 +41,8 @@ export class ClientGridComponent {
   displayedColumns: string[] = ['nome', 'documento', 'endereco', 'telefone', 'email', 'status', 'actions'];
   data = [];
   searchTerm: string = '';
+  searchDate: any = null;
+  searchStatus = null;
   items = 1;
   page = 1;
   user = {};
@@ -59,8 +65,7 @@ export class ClientGridComponent {
   }
 
 
-  constructor(private router: Router, private toast: ToastService, private userService: UserService, 
-    public dialog: MatDialog, private authService: AuthService
+  constructor( private router: Router, private toast: ToastService, private clientService: ClientService, private authService: AuthService
   ) {
     // this.authService.permissions$.subscribe(perms => {
     //   this.access = perms.usuario;
@@ -98,30 +103,40 @@ export class ClientGridComponent {
   }
   
   findAll(){
-    this.userService.list_all_users(this.searchTerm, this.pageIndex + 1, this.pageSize).subscribe(
+    this.loading = true;
+
+    let formatedDate = null
+    if(this.searchDate){
+      const originalDate = new Date(this.searchDate);
+      formatedDate = originalDate.toISOString().slice(0, 10);
+    }
+
+
+    this.clientService.list_all_clients(this.searchTerm, this.pageIndex + 1, formatedDate, this.searchStatus, this.pageSize).subscribe(
         result => {
             this.data = result?.data ?? []
             this.length = result?.total_items ?? 0
+            this.loading =false
         },
         error => {
-          console.error(error.error.detail);
             this.toast.show('error', "Erro!", error.error.detail || 
               'Ocorreu um erro, tente novamente')
+            this.loading =false
         }
     );
   }
 
   viewItem(element: any){
-    this.router.navigate(["/usuario/form/" + element.id + "/visualizar"]);
+    this.router.navigate(["/cliente/form/" + element.id + "/visualizar"]);
   }
 
   editItem(element: any){
-    this.router.navigate(["/usuario/form/" + element.id]);
+    this.router.navigate(["/cliente/form/" + element.id]);
   }
 
   deleteItem(){
     if(this.modal.id){
-      this.userService.delete_user(this.modal.id).subscribe(
+      this.clientService.delete_client(this.modal.id).subscribe(
         result => {
             this.toast.show('success', "Sucesso!", result.detail ?? 'Usuário deletado com sucesso!');
             this.findAll();
@@ -136,7 +151,13 @@ export class ClientGridComponent {
     
   }
 
-
+  clearSearch() {
+    this.pageIndex = 0;
+    this.searchDate = null;
+    this.searchTerm = '';
+    this.searchStatus = null;
+     this.findAll();
+  }
 
   handlePageEvent(event: any){
     this.pageEvent = event;
@@ -148,7 +169,7 @@ export class ClientGridComponent {
   
   openModal(element: any){
     this.modal.status = true;
-    this.modal.text = `Confirma a exclusão do usuário "${element.nome}"?`;
+    this.modal.text = `Confirma a exclusão do cliente "${element.nome}"?`;
     this.modal.id = element.id;
   }
 

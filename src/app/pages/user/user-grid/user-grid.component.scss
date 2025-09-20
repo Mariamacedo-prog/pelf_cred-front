@@ -1,28 +1,16 @@
-.page-container{
- width: 80vw;
- max-width: 80vw;
- display: block;
-}
+  .search-field{
+    width: 100%;
+  }
 
-.search-field{
-  width: 80%;
+  .mat-cell {
+  white-space: normal !important;
+  word-break: break-word;
 }
-
-.header{
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-}
-
 
 @media screen and (max-width: 800px) {
   .page-container{
     width: 95vw;
     padding: 5px;
-  }
-  .header{
-   flex-direction: column;
-   margin-bottom: 50px;
   }
   .search-field{
     width: 100%;
@@ -30,17 +18,9 @@
 }
 
 @media screen and (max-width: 700px) {
-
   .page-container{
     width: calc(100vw - 80px);
     margin-left: 5px;
     margin-top: 80px;
   }
-}
-
-
-@media screen and (max-width: 600px) {
-  .header{
-    width: calc(100vw - 50px);
-   }
 }
