@@ -124,7 +124,7 @@ export class ClientFormComponent {
 
       this.service.edit_client(this.id, data).subscribe(
         data => {
-          this.toast.show('success', "Sucesso!", data.detail ?? 'Cliente/Empresa criada com sucesso!');
+          this.toast.show('success', "Sucesso!", data.detail ?? 'Cliente/Empresa atualizada com sucesso!');
           this.location.back();
         },
         error => {
@@ -136,7 +136,7 @@ export class ClientFormComponent {
     }else{
       this.formControls.markAllAsTouched();
       this.enderecoControls.markAllAsTouched();
-      this.toast.show('error', "Erro!",'Preencha todos os dados!');
+      this.toast.show('error', "Erro!",'Preencha todos os campos obrigatórios para concluir o cadastro!');
     }
   }
 
@@ -166,7 +166,7 @@ export class ClientFormComponent {
     } else {
       this.formControls.markAllAsTouched();
       this.enderecoControls.markAllAsTouched();
-      this.toast.show('error', "Erro!",'Preencha todos os dados!');
+      this.toast.show('error', "Erro!",'Preencha todos os campos obrigatórios para concluir o cadastro!');
     }
   }
 

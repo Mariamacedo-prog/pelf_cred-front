@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,11 +11,12 @@ import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { ToastService } from '../../../services/toast';
 import { AuthService } from '../../../services/auth';
-import { PlanoService } from '../../../services/plano.service';
+import { ServicoService } from '../../../services/servico.service';
+
 
 @Component({
-  selector: 'app-plano-grid',
-  imports: [CommonModule, 
+  selector: 'app-servico-grid',
+    imports: [CommonModule, 
     MatPaginatorModule,
     MatIconModule,
     FormsModule, 
@@ -25,15 +26,15 @@ import { PlanoService } from '../../../services/plano.service';
     DialogComponent,
     RouterModule,
     MatButtonModule],
-  templateUrl: './plano-grid.component.html',
-  styleUrl: './plano-grid.component.scss'
+  templateUrl: './servico-grid.component.html',
+  styleUrl: './servico-grid.component.scss'
 })
-export class PlanoGridComponent {
-  access = 'total';
+export class ServicoGridComponent {
+access = 'total';
   private typingTimer: any;
   loading = false;
 
-  displayedColumns: string[] = ['nome', 'descricao', 'valor_mensal', 'numero_parcelas', 'valor_total', 'servicos_vinculados', 'ativo', 'actions'];
+  displayedColumns: string[] = ['nome', 'descricao', 'valor', 'categoria', 'ativo', 'actions'];
   data = [];
   searchTerm: string = '';
   items = 1;
@@ -58,7 +59,7 @@ export class PlanoGridComponent {
   }
 
 
-  constructor( private router: Router, private toast: ToastService, private service: PlanoService, private authService: AuthService
+  constructor( private router: Router, private toast: ToastService, private service: ServicoService, private authService: AuthService
   ) {
     // this.authService.permissions$.subscribe(perms => {
     //   this.access = perms.usuario;
@@ -76,7 +77,7 @@ export class PlanoGridComponent {
   }
   
   addNew() {
-    this.router.navigate(["/plano/novo"]);
+    this.router.navigate(["/servico/novo"]);
   }
 
 
@@ -85,7 +86,6 @@ export class PlanoGridComponent {
   }
   
   find(event:any) {
-    const input = (event.target as HTMLInputElement).value;
     this.loading = true;
     clearTimeout(this.typingTimer);
     this.pageIndex = 0
@@ -114,18 +114,18 @@ export class PlanoGridComponent {
   }
 
   viewItem(element: any){
-    this.router.navigate(["/plano/form/" + element.id + "/visualizar"]);
+    this.router.navigate(["/servico/form/" + element.id + "/visualizar"]);
   }
 
   editItem(element: any){
-    this.router.navigate(["/plano/form/" + element.id]);
+    this.router.navigate(["/servico/form/" + element.id]);
   }
 
   deleteItem(){
     if(this.modal.id){
       this.service.delete(this.modal.id).subscribe(
         result => {
-            this.toast.show('success', "Sucesso!", result.detail ?? 'Plano deletado com sucesso!');
+            this.toast.show('success', "Sucesso!", result.detail ?? 'Serviço deletado com sucesso!');
             this.findAll();
             this.closeModal()
         },
@@ -147,7 +147,7 @@ export class PlanoGridComponent {
   
   openModal(element: any){
     this.modal.status = true;
-    this.modal.text = `Confirma a exclusão do plano "${element.nome}"?`;
+    this.modal.text = `Confirma a exclusão do serviço "${element.nome}"?`;
     this.modal.id = element.id;
   }
 

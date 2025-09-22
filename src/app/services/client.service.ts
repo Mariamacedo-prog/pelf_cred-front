@@ -37,7 +37,7 @@ export class ClientService {
     });
   }
 
-  list_all_clients(search = '', page = 1, data_cadastro: any = null, disabled = null, items = 10): Observable<any> {
+  list_all_clients(search = '', page = 1, data_cadastro: any = null, ativo = null, items = 10): Observable<any> {
     let params: any = {
       pagina: page,
       items: items
@@ -51,8 +51,8 @@ export class ClientService {
       params.data_cadastro = data_cadastro
     }
 
-    if(disabled !== null){
-      params.disabled = disabled
+    if(ativo !== null){
+      params.ativo = ativo
     }
 
     return this.http.get(`${this.baseUrl}/clientes`,{ 

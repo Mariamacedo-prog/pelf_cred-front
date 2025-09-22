@@ -19,4 +19,15 @@ export const routes: Routes = [
     { path: 'plano/lista', loadComponent: () => import('./pages/plano/plano-grid/plano-grid.component').then(c => c.PlanoGridComponent), canActivate: [authGuard]},
     { path: 'plano/form/:id', loadComponent: () => import('./pages/plano/plano-form/plano-form.component').then(c => c.PlanoFormComponent), canActivate: [authGuard]},
     { path: 'plano/form/:id/:tela', loadComponent: () => import('./pages/plano/plano-form/plano-form.component').then(c => c.PlanoFormComponent), canActivate: [authGuard]},
+    // Serviço
+    { path: 'servico/novo', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
+    { path: 'servico/lista', loadComponent: () => import('./pages/servico/servico-grid/servico-grid.component').then(c => c.ServicoGridComponent), canActivate: [authGuard]},
+    { path: 'servico/form/:id', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
+    { path: 'servico/form/:id/:tela', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
+
+    // Vendedor
+    { path: 'vendedor/novo', loadComponent: () => import('./pages/vendedor/vendedor-form/vendedor-form.component').then(c => c.VendedorFormComponent), canActivate: [authGuard]},
+    { path: 'vendedor/lista', loadComponent: () => import('./pages/vendedor/vendedor-grid/vendedor-grid.component').then(c => c.VendedorGridComponent), canActivate: [authGuard]},
+    { path: 'vendedor/form/:id', loadComponent: () => import('./pages/vendedor/vendedor-form/vendedor-form.component').then(c => c.VendedorFormComponent), canActivate: [authGuard]},
+    { path: 'vendedor/form/:id/:tela', loadComponent: () => import('./pages/vendedor/vendedor-form/vendedor-form.component').then(c => c.VendedorFormComponent), canActivate: [authGuard]},
 ];

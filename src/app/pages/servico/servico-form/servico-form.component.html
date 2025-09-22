@@ -2,8 +2,8 @@
   <mat-card class="card-form">
 
     <mat-card-header>
-      <mat-card-title *ngIf="id">Plano</mat-card-title>
-      <mat-card-title *ngIf="!id">Novo Plano</mat-card-title>
+      <mat-card-title *ngIf="id">Serviço</mat-card-title>
+      <mat-card-title *ngIf="!id">Novo Serviço</mat-card-title>
     </mat-card-header>
 
     <form [formGroup]="formControls">
@@ -23,42 +23,22 @@
               <textarea [readonly]="view" matInput type="textarea" formControlName="descricao"></textarea>
           </mat-form-field>
         </div>
-        <div class="row">
-          <mat-slide-toggle (change)="handleAvista($event)" color="primary" formControlName="avista">À vista</mat-slide-toggle>
-        </div>
 
         <div class="row">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Categoria</mat-label>
+            <input [readonly]="view" matInput formControlName="categoria" />
+          </mat-form-field>
           <mat-form-field appearance="fill">
-            <mat-label>{{valorLabel}}</mat-label>
+            <mat-label>Valor</mat-label>
             <input 
                 [readonly]="view" 
-                matInput 
+                matInput
                 required
                 [value]="valorFormatado"
                 (keydown)="blockNegative($event)"
                 (input)="onChangeValor($event)"
             />
-            <mat-error *ngIf="formControls.get('valor_mensal')?.hasError('required')">
-                Este campo é <strong>obrigatório</strong>
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Número de parcelas</mat-label>
-            <mat-select formControlName="numero_parcelas" (selectionChange)="selectParcelas($event)">
-              @for (option of listOptions; track option) {
-                <mat-option [value]="option.value">{{option.label}}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="row" *ngIf="listOptionsServicos">
-          <mat-form-field>
-            <mat-label>Serviços</mat-label>
-            <mat-select formControlName="servicos_vinculados" multiple>
-              @for (servico of listOptionsServicos; track servico) {
-                <mat-option [value]="servico.id">{{servico.nome ? servico.nome : ''}}</mat-option>
-              }
-            </mat-select>
           </mat-form-field>
         </div>
       </mat-card-content>

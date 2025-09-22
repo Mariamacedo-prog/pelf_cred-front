@@ -159,7 +159,7 @@ export class UserFormComponent {
 
       this.userService.edit_user(this.id, data).subscribe(
         data => {
-          this.toast.show('success', "Sucesso!", data.detail ?? 'Usuário criado com sucesso!');
+          this.toast.show('success', "Sucesso!", data.detail ?? 'Usuário atualizado com sucesso!');
           this.location.back();
         },
         error => {
@@ -171,7 +171,7 @@ export class UserFormComponent {
     }else{
       this.formControls.markAllAsTouched();
       this.enderecoControls.markAllAsTouched();
-      this.toast.show('error', "Erro!",'Preencha todos os dados!');
+      this.toast.show('error', "Erro!",'Preencha todos os campos obrigatórios para concluir o cadastro!');
     }
   }
 
@@ -201,7 +201,7 @@ export class UserFormComponent {
     } else {
       this.formControls.markAllAsTouched();
       this.enderecoControls.markAllAsTouched();
-      this.toast.show('error', "Erro!",'Preencha todos os dados!');
+      this.toast.show('error', "Erro!",'Preencha todos os campos obrigatórios para concluir o cadastro!');
     }
   }
 
