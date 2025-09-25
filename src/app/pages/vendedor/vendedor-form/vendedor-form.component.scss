@@ -1,0 +1,45 @@
+
+.image-user{
+  background-image: url("../../../../assets/img/usuario.jpg");
+  width: 200px;
+  height: 200px;
+  border-radius: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.user-photo{
+    img{
+        padding: 20px;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%; /* Círculo */
+        object-fit: cover;  /* Preenche o círculo sem distorcer */
+        object-position: center; 
+    }
+    align-items: self-end;
+    button {
+        margin-left: -100px;
+        margin-bottom: 10px;
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    .image-user{
+        width: calc(100vw - 50px);
+        margin-top: -100px;
+    }
+    .user-photo{
+        flex-direction: column-reverse;
+        align-items: center;
+        img{
+            width: calc(100vw - 50px);
+            margin-top: -100px;
+        }
+        button {
+            margin-left: 80px;
+        }
+    }
+}

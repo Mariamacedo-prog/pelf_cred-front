@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -136,5 +136,23 @@ export class ValidateService {
     }
 
     return { documentoInvalido: true };
+  }
+
+  validateRG(control: AbstractControl): ValidationErrors | null  {
+    const rg = control.value?.replace(/[^\dXx]/g, '');
+
+    if (!rg || rg.length === 0) {
+      return null;
+    }
+
+    if (!/^\d{7,8}[\dXx]?$/.test(rg)) {
+      return { 'rgInvalido': true };
+    }
+
+    if (/^(\d)\1+$/.test(rg)) {
+      return { 'rgInvalido': true };
+    }
+
+    return null;
   }
 }

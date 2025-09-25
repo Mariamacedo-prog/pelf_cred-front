@@ -243,14 +243,21 @@ router-outlet {
   .container-form {
     width: 100vw;
     max-width: 100vw;
+    padding: 0px;
   }
-
   .menu-closed-margin {
     margin: 15px; 
   }
   .content{
     padding-left: 0px;
   }
+
+  .main {
+    .content{
+      padding: 0px;
+    }
+  }
+
 }
 
 @media screen and (max-width: 600px) {
