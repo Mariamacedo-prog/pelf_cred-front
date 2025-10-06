@@ -30,4 +30,10 @@ export const routes: Routes = [
     { path: 'vendedor/lista', loadComponent: () => import('./pages/vendedor/vendedor-grid/vendedor-grid.component').then(c => c.VendedorGridComponent), canActivate: [authGuard]},
     { path: 'vendedor/form/:id', loadComponent: () => import('./pages/vendedor/vendedor-form/vendedor-form.component').then(c => c.VendedorFormComponent), canActivate: [authGuard]},
     { path: 'vendedor/form/:id/:tela', loadComponent: () => import('./pages/vendedor/vendedor-form/vendedor-form.component').then(c => c.VendedorFormComponent), canActivate: [authGuard]},
+
+    // Contrato
+    { path: 'contrato/novo', loadComponent: () => import('./pages/contrato/contrato-form/contrato-form.component').then(c => c.ContratoFormComponent), canActivate: [authGuard]},
+    { path: 'contrato/lista', loadComponent: () => import('./pages/contrato/contrato-grid/contrato-grid.component').then(c => c.ContratoGridComponent), canActivate: [authGuard]},
+    { path: 'contrato/form/:id', loadComponent: () => import('./pages/contrato/contrato-form/contrato-form.component').then(c => c.ContratoFormComponent), canActivate: [authGuard]},
+    { path: 'contrato/form/:id/:tela', loadComponent: () => import('./pages/contrato/contrato-form/contrato-form.component').then(c => c.ContratoFormComponent), canActivate: [authGuard]},
 ];

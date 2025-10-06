@@ -1,0 +1,43 @@
+.full-width {
+  width: 100%;
+}
+
+mat-progress-spinner {
+  margin-right: 8px;
+}
+
+
+.new-file-button{
+  cursor: pointer;
+  padding: 20px;
+  color: var(--main-primary);
+  mat-icon{
+    width: 120px;
+    height: 120px;
+    line-height: 1;
+    font-size: 120px !important;
+  }
+  transition: all ease 0.3s;
+
+  &:hover{
+    color: var(--main-primary-medium);
+  }
+}
+
+.anexo-area{
+  display: flex; 
+  align-items: center; 
+  flex-direction: column; 
+  justify-content: center;
+  border: 1.5px solid var(--main-gray-l);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+
+@media screen and (max-width: 700px) {
+  .anexo-area{
+    width: 100%;
+    padding: 10px;
+  }
+}

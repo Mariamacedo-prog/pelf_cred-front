@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class VendedorService {
-  private baseUrl = environment.ANGULAR_API;
+export class ContratoService {
+private baseUrl = environment.ANGULAR_API;
   private store = inject(Store);
 
   token = '';
@@ -22,7 +22,7 @@ export class VendedorService {
   }
 
   create(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/novo/vendedor`, data, {
+    return this.http.post(`${this.baseUrl}/novo/contrato`, data, {
       headers: {
         "Authorization": `Bearer ${this.token}`
       }
@@ -30,14 +30,14 @@ export class VendedorService {
   }
 
   get_by_id(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/vendedor/${id}`, {
+    return this.http.get(`${this.baseUrl}/contrato/${id}`, {
       headers: {
         "Authorization": `Bearer ${this.token}`
       }
     });
   }
 
-  list_all(filtro = '', page = 1, filtro_cidade: any = null, items = 10): Observable<any> {
+  list_all(filtro = '', page = 1, items = 10): Observable<any> {
     let params: any = {
       pagina: page,
       items: items
@@ -47,11 +47,7 @@ export class VendedorService {
       params.filtro = filtro
     }
 
-    if(filtro_cidade){
-      params.filtro_cidade = filtro_cidade
-    }
-
-    return this.http.get(`${this.baseUrl}/vendedores`,{ 
+    return this.http.get(`${this.baseUrl}/contratos`,{ 
       params: params,
       headers: {
         "Authorization": `Bearer ${this.token}`
@@ -60,7 +56,7 @@ export class VendedorService {
   }
 
   delete(id = null): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/vendedor/${id}`, {
+    return this.http.delete(`${this.baseUrl}/contrato/${id}`, {
       headers: {
         "Authorization": `Bearer ${this.token}`
       }
@@ -68,19 +64,7 @@ export class VendedorService {
   }
   
   edit(id: string, data: any): Observable<any> {
-     return this.http.put(`${this.baseUrl}/vendedor/${id}`, data, {
-      headers: {
-        "Authorization": `Bearer ${this.token}`
-      }
-    });
-  }
-
-
-  get_city(search: string = ''): Observable<any> {
-    return this.http.get(`${this.baseUrl}/cidades`, {
-      params:{
-        filtro: search
-      },
+     return this.http.put(`${this.baseUrl}/contrato/${id}`, data, {
       headers: {
         "Authorization": `Bearer ${this.token}`
       }

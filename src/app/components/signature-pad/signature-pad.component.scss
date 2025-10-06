@@ -1,0 +1,51 @@
+.input-file-row{
+  display: flex;
+  justify-content:space-between;
+}
+
+.div-column{
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+.flex-row {
+  display: flex;
+}
+.wrapper {
+  border: 1px solid var(--main-primary-medium-dark);
+  background: var(--main-white);
+  border-right: 0;
+}
+canvas#signature-pad {
+  background-color: var(--main-white);
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+button#clear {
+  height: 100%;
+  background-color: var(--main-white);
+  border: 4px solid var(--main-primary);
+  padding: 5px;
+  color: var(--main-black);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button#clear span {
+  transform: rotate(90deg);
+  display: block;
+}
+
+button#confirmar {
+  height: 100%;
+  background:var(--main-primary-medium) ;
+  border: 1px solid transparent;
+  color: var(--main-white);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px;
+}

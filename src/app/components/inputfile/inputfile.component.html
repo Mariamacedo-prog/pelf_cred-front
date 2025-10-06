@@ -1,0 +1,31 @@
+<div *ngIf="pdfSrc" class="image-area" >
+  <img src="assets/img/pdf-icon.png" (click)="openModal()" style="cursor: pointer;" alt="Pdf Selecionado" />
+</div>
+
+<div *ngIf="imagemSrc" >
+  <img [src]="imagemSrc" (click)="openModal()" style="cursor: pointer;width:200px;height:200px;" alt="Imagem Selecionada" />
+</div>
+
+
+<div class="input-file-area">
+  <p class="input-file-titulo">{{nome}}</p>
+  <input *ngIf="!view" type="file" [accept]="accept" (change)="onFileSelected($event)" #fileInput style="display: none" />
+  <button *ngIf="!view" mat-stroked-button color="primary" (click)="fileInput.click()">{{nomeBotao}}</button>
+</div>
+
+
+<div *ngIf="showModal">
+  <div class="modal-background-area" (click)="closeModal()"></div>
+  <div class="modal-area">
+    <div class="close-button" (click)="closeModal()">X</div>
+    <div *ngIf="pdfSrc" class="pdf-view">
+      <object [data]="pdfSrc" type="application/pdf">
+        <p>Seu navegador não suporta PDF inline. <a [href]="pdfSrc" target="_blank">Abrir PDF</a>.</p>
+      </object>
+    </div>
+
+    <div *ngIf="imagemSrc" class="image-view">
+      <img [src]="imagemSrc" alt="Imagem Selecionada" />
+    </div>
+  </div>
+</div>

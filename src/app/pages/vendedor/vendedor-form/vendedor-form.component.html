@@ -15,7 +15,7 @@
                     <img [src]="fotoControls.get('base64')?.value" class="user-img" >
                 </div>
                 <label *ngIf="fotoControls.get('base64')?.value?.length == 0" style="cursor: pointer;" >
-                    <input type="file"  #fileInput  (change)="onSelectPicture($event)" hidden />
+                    <input type="file" accept=".jpg, .jpeg, .png" #fileInput (change)="onSelectPicture($event)" hidden />
                     <button mat-icon-button type="button" aria-label="Upload file" (click)="openFileSelector()">
                         <mat-icon>edit</mat-icon>
                     </button>

@@ -1,0 +1,233 @@
+<!-- 
+    <div *ngIf="showSignature" style="display: flex; align-items: center; justify-content: center;">
+        <app-signature-pad [active]="signButtomActive" (dataEvent)="receiveSignImage($event)" ></app-signature-pad>
+    </div> 
+-->
+<div class="container-form">
+  <mat-card class="card-form">
+    <mat-card-header>
+      <mat-card-title *ngIf="id">Contrato</mat-card-title>
+      <mat-card-title *ngIf="!id">Novo Contrato</mat-card-title>
+    </mat-card-header>
+
+
+     <mat-tab-group >
+      <mat-tab label="Contrato" class="tab-1" >
+         <mat-card-content [formGroup]="formControls">
+
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>Nome do Cliente ou Documento</mat-label>
+                  <input [readonly]="view" [value]="clientSelected?.nome || ''" [matAutocomplete]="clienteAuto" matInput (keyup)="searchClient($event)"  [formControl]="clientControl" />
+                    <mat-progress-spinner
+                        *ngIf="loadingClient"
+                        matSuffix
+                        diameter="20"
+                        mode="indeterminate"
+                     ></mat-progress-spinner>
+                  <mat-autocomplete #clienteAuto="matAutocomplete"  (optionSelected)="onClientOptionSelected($event.option.value)" [displayWith]="displayClientName">
+                     <mat-option *ngFor="let option of clientList" [value]="option">
+                        {{ option?.nome }}
+                     </mat-option>
+                  </mat-autocomplete>
+               </mat-form-field>
+            </div>
+            
+            <div class="row" *ngIf="clientSelected.nome">
+               <mat-form-field appearance="fill">
+                  <mat-label>Nome cliente:</mat-label>
+                  <input disabled  matInput [value]="clientSelected?.nome || ''" />
+               </mat-form-field>
+       
+            </div>
+            <div class="row mb-5" *ngIf="clientSelected.documento">
+               <mat-form-field appearance="fill">
+                  <mat-label>Documento cliente:</mat-label>
+                  <input disabled  matInput [value]="clientSelected?.documento || ''" />
+               </mat-form-field>
+
+               <mat-form-field appearance="fill">
+                  <mat-label>E-mail cliente:</mat-label>
+                  <input disabled  matInput [value]="clientSelected?.email || ''" />
+               </mat-form-field>
+            </div>
+            
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>Nome do Vendedor ou Documento</mat-label>
+                  <input [readonly]="view" [value]="vendedorSelected?.nome  || ''" [matAutocomplete]="vendedorAuto" matInput (keyup)="searchVendedor($event)"  [formControl]="vendedorControl" />
+                   <mat-progress-spinner
+                     *ngIf="loadingVendedor"
+                     matSuffix
+                     diameter="20"
+                     mode="indeterminate"
+                  ></mat-progress-spinner>
+                  <mat-autocomplete #vendedorAuto="matAutocomplete"  (optionSelected)="onVendedorOptionSelected($event.option.value)" [displayWith]="displayVendedorName">
+                     <mat-option *ngFor="let option of vendedorList" [value]="option">
+                        {{ option?.nome }}
+                     </mat-option>
+                  </mat-autocomplete>
+               </mat-form-field>
+            </div>
+
+            <div class="row" *ngIf="vendedorSelected.nome">
+               <mat-form-field appearance="fill">
+                  <mat-label>Nome vendedor:</mat-label>
+                  <input disabled  matInput [value]="vendedorSelected?.nome || ''" />
+               </mat-form-field>
+            </div>
+            <div class="row mb-5" *ngIf="vendedorSelected.cpf">
+               <mat-form-field appearance="fill">
+                  <mat-label>CPF vendedor:</mat-label>
+                  <input disabled  matInput [value]="vendedorSelected?.cpf || ''" />
+               </mat-form-field>
+
+               <mat-form-field appearance="fill">
+                  <mat-label>E-mail vendedor:</mat-label>
+                  <input disabled  matInput [value]="vendedorSelected?.email || ''" />
+               </mat-form-field>
+            </div>
+
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>Nome do Plano</mat-label>
+                  <input [readonly]="view" [value]="planoSelected?.nome  || ''" [matAutocomplete]="planoAuto" matInput (keyup)="searchPlano($event)"  [formControl]="planoControl" />
+     
+                  <mat-autocomplete #planoAuto="matAutocomplete"  (optionSelected)="onPlanoOptionSelected($event.option.value)" [displayWith]="displayPlanoName">
+                     <mat-option *ngFor="let option of planoList" [value]="option">
+                        {{ option?.nome }}
+                     </mat-option>
+                  </mat-autocomplete>
+
+                  <mat-progress-spinner
+                     *ngIf="loadingPlano"
+                     matSuffix
+                     diameter="20"
+                     mode="indeterminate"
+                  ></mat-progress-spinner>
+               </mat-form-field>
+            </div>
+
+            <mat-card-content [formGroup]="parcelamentoControls">      
+               <div class="row" *ngIf="listOptionsParcelas && listOptionsParcelas.length > 0">
+                  <mat-form-field>
+                     <mat-label>Opções de parcelas</mat-label>
+                     <mat-select [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
+                        @for (option of listOptionsParcelas; track option) {
+                           <mat-option [value]="option"> {{option.number ? option.number + 'x' : ''}} de {{option.value ? option.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })  : ''}}</mat-option>
+                        }
+                     </mat-select>
+                  </mat-form-field>
+               </div>
+               <div class="row" *ngIf="planoSelected.nome && this.parcelamentoControls.get('qtd_parcela')?.value">
+                  <mat-form-field>
+                     <mat-label>Data Início</mat-label>
+                     <input matInput 
+                        [readonly]="view"
+                        formControlName="data_inicio"
+                        (dateChange)="selectedDataInicio()"
+                        placeholder="DD/MM/YYYY"
+                        [matDatepicker]="datainicio"
+                     >
+                     <mat-datepicker-toggle matIconSuffix [for]="datainicio"></mat-datepicker-toggle>
+                     <mat-datepicker #datainicio></mat-datepicker>
+                  </mat-form-field>
+                  <mat-form-field>
+                     <mat-label>Data Fim</mat-label>
+                     <input matInput 
+                        [readonly]="view"
+                        formControlName="data_fim"
+                        placeholder="DD/MM/YYYY"
+                        [matDatepicker]="datafim"
+                     >
+                     <mat-datepicker-toggle matIconSuffix [for]="datafim"></mat-datepicker-toggle>
+                     <mat-datepicker #datafim></mat-datepicker>
+                  </mat-form-field>
+                  <mat-form-field>
+                     <mat-label>Data Vigência</mat-label>
+                     <input matInput 
+                        [readonly]="view"
+                        formControlName="data_vigencia"
+                        placeholder="DD/MM/YYYY"
+                        [matDatepicker]="datavigencia"
+                     >
+                     <mat-datepicker-toggle matIconSuffix [for]="datavigencia"></mat-datepicker-toggle>
+                     <mat-datepicker #datavigencia></mat-datepicker>
+                  </mat-form-field>
+               </div>
+         
+
+               <div class="row" *ngIf="planoSelected.nome">
+                  <mat-form-field *ngIf="planoSelected.servicos_vinculados && planoSelected.servicos_vinculados.length > 0">
+                     <mat-label>Serviços vinculados ao Plano</mat-label>
+                     <mat-select  [value]="planoSelected.servicos_vinculados" disabled multiple>
+                        @for (servico of listOptionsServicos; track servico) {
+                           <mat-option [value]="servico.id">{{servico.nome ? servico.nome : ''}}</mat-option>
+                        }
+                     </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                     <mat-label>Taxa de juros por atraso :</mat-label>
+                       <input 
+                           [readonly]="view" 
+                           matInput 
+                           [value]="valorFormatadoJuros"
+                           (keydown)="blockNegativeJuros($event)"
+                           (input)="onChangeJuros($event)"
+                        />
+                  </mat-form-field>
+               </div>
+            </mat-card-content>
+         </mat-card-content>
+      </mat-tab>
+      <mat-tab label="Documentos" class="tab-2">
+         <mat-card-content>
+            <mat-card-title>Documentos</mat-card-title>
+            <div class="row">
+               @for (file of this.anexosList || []; track file; let i = $index) {
+                  <div class="anexo-area">
+                     <div class="row">
+                        <app-inputfile [nome]="anexosList[i]?.nome.length <= 25 ? anexosList[i]?.nome : anexosList[i]?.nome.slice(0, 25) + '...' " 
+                           [view]="view"
+                           [fileInput]="anexosList[i]"  
+                           (fileOutput)="saveFileBase64($event, i)" 
+                           (fileSelected)="onFileSelected($event, i)"
+                        ></app-inputfile>
+                     </div>
+                  
+                     <mat-form-field appearance="fill">
+                        <mat-label>Descrição:</mat-label>
+                        <textarea matInput [readonly]="view"  [ngModel]="anexosList[i]?.descricao" (ngModelChange)="onDescricaoAnexoChange($event, i)"></textarea>
+                     </mat-form-field>
+      
+                     <button *ngIf="!view" class="icon-excluir" mat-icon-button (click)="deleteFile(i)">
+                        <mat-icon >delete</mat-icon>
+                     </button>
+                  </div>
+               }
+
+               <div *ngIf="!view" class="new-file-button" (click)="addNewFile()">
+                  <mat-icon>add</mat-icon>
+               </div>
+            </div>
+
+         </mat-card-content>
+      </mat-tab>
+
+      <mat-tab label="Assinatura" class="tab-3">
+         <mat-card-content>
+            <mat-card-title>Em breve</mat-card-title>
+
+         </mat-card-content>
+      </mat-tab>
+   </mat-tab-group>
+
+ 
+   <div class="button-area">
+      <button mat-raised-button color="primary" *ngIf="id && !view" (click)="update()" style="z-index: 0; position: relative;">Atualizar</button>
+      <button class="button-primary" mat-raised-button color="primary" *ngIf="!id" (click)="create()" style="z-index: 0; position: relative;">Cadastrar</button>
+      <button mat-stroked-button color="accent" (click)="backPage()" style="z-index: 0; position: relative;">Voltar</button>
+   </div>
+
+  </mat-card>
+</div>

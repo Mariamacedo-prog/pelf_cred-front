@@ -158,10 +158,9 @@ id = '';
 
     const reais = digits.slice(0, -2);
     const centavos = digits.slice(-2);
-    this.valorFormatado = `${parseInt(reais, 10)},${centavos}`;
+    this.valorFormatado = `R$ ${parseInt(reais, 10)},${centavos}`;
 
     const valorDecimal = parseFloat(`${reais}.${centavos}`);
-    this.valorFormatado = `${reais}.${centavos}`;
 
     this.formControls.get('valor')?.setValue(valorDecimal);
   }

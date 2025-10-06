@@ -37,7 +37,7 @@ export class ClientService {
     });
   }
 
-  list_all_clients(search = '', page = 1, data_cadastro: any = null, ativo = null, items = 10): Observable<any> {
+  list_all_clients(search = '', page = 1, data_cadastro: any = null, ativo: any = null, items = 10): Observable<any> {
     let params: any = {
       pagina: page,
       items: items

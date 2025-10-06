@@ -92,8 +92,14 @@ export class VendedorFormComponent {
   onSelectPicture(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
-
+    
     const file: File = input.files[0];
+    const validTypes = ['image/jpeg', 'image/png'];
+
+    if (!validTypes.includes(file.type)) {
+      alert('Por favor, selecione uma imagem JPG ou PNG.');
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -126,7 +132,7 @@ export class VendedorFormComponent {
   }
   
   getUserById(id: string): void{
-    this.service.get_client_by_id(id).subscribe(
+    this.service.get_by_id(id).subscribe(
         data => {
           this.item = data;
 
@@ -213,7 +219,7 @@ export class VendedorFormComponent {
         data.foto = this.fotoControls.getRawValue()
       }
 
-      this.service.create_client(data).subscribe(
+      this.service.create(data).subscribe(
         data => {
           this.toast.show('success', "Sucesso!",'Vendedor criada com sucesso!');
           this.location.back();
