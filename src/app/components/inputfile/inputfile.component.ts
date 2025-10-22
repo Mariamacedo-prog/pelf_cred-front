@@ -1,12 +1,13 @@
 
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-inputfile',
+  standalone: true,
   imports: [
     CommonModule,
     MatButtonModule,
@@ -26,7 +27,8 @@ export class InputfileComponent {
   pdfBlob: any;
   imagemSrc: string | undefined;
   @Input() accept: string = '.pdf,.jpg';
-  @Input() fileInput: any;
+  @Input() previewFile: any;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @Input() view: boolean = false ;
   @Output() fileOutput: EventEmitter<{ base64: string, type: string, name: string }> = new EventEmitter<{ base64: string, type: string, name: string }>();
 
@@ -34,17 +36,21 @@ export class InputfileComponent {
 
   }
 
+  openFilePicker() {
+    this.fileInput?.nativeElement?.click();
+  }
+
   ngOnInit(){
     this.imagemSrc = undefined;
     this.pdfSrc = null;
 
-    if(this.fileInput  && this.fileInput.tipo && this.fileInput.base64){
-      if(this.fileInput.tipo == 'application/pdf' && this.fileInput.base64 ){
-        const base64String = this.fileInput.base64.split(',')[1];
+    if(this.previewFile  && this.previewFile.tipo && this.previewFile.base64){
+      if(this.previewFile.tipo == 'application/pdf' && this.previewFile.base64 ){
+        const base64String = this.previewFile.base64.split(',')[1];
         this.convertBase64ToPDF(base64String);
         this.imagemSrc = undefined;
-      }else if((this.fileInput.tipo == 'image/jpeg' || this.fileInput.tipo == 'image/jpg' || this.fileInput.tipo == 'image/png') && this.fileInput.base64){
-        this.imagemSrc = this.fileInput.base64;
+      }else if((this.previewFile.tipo == 'image/jpeg' || this.previewFile.tipo == 'image/jpg' || this.previewFile.tipo == 'image/png') && this.previewFile.base64){
+        this.imagemSrc = this.previewFile.base64;
         this.pdfSrc = null;
       }else{
         this.imagemSrc = undefined;

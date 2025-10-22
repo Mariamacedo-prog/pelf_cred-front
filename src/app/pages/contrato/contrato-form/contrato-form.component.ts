@@ -62,7 +62,7 @@ export class ContratoFormComponent {
   clienteAssinaturaControls!: FormGroup;
   responsavelAssinaturaControls!: FormGroup;
   anexosList: any = [];
-
+  servicosVinculadosIds: any = [];
   clientControl = new FormControl('');
   clientList: any = []
   clientSelected: any = {}
@@ -233,22 +233,20 @@ export class ContratoFormComponent {
           if(data.plano){
             this.planoSelected = data.plano;
             this.formControls?.get("plano_id")?.setValue(data.plano.id)
-            this.planoSelected.valor_total = data.plano.numero_parcelas * data.plano.valor_mensal;
-
+            
             if(this.planoSelected.numero_parcelas){
+              this.servicosVinculadosIds = this.planoSelected?.servicos_vinculados?.map((s : any) => s.id) || [];
               for(let i = 1 ; i <= this.planoSelected.numero_parcelas; i++){
                 this.listOptionsParcelas.push({
                   number: i,
-                  value: this.planoSelected.valor_total / i
+                  value: data?.parcelamento?.valor_total / i
                 })
 
                 if(data?.parcelamento?.qtd_parcela == i){
                   this.selectedParcela = {
                     number: i,
-                    value: this.planoSelected.valor_total / i
+                    value: data?.parcelamento?.valor_total / i
                   }
-
-                  console.log(this.selectedParcela)
                 }
               }
             }
@@ -427,6 +425,7 @@ export class ContratoFormComponent {
     this.parcelamentoControls.get('data_fim')?.setValue(null)
     this.parcelamentoControls.get('data_inicio')?.setValue(null)
     this.parcelamentoControls.get('meio_pagamento')?.setValue(0)
+    this.servicosVinculadosIds = [];
 
     this.planoSelected = {}
     const input = event?.target?.value;
@@ -446,16 +445,22 @@ export class ContratoFormComponent {
 
     console.log(this.planoSelected)
 
+    this.servicosVinculadosIds = this.planoSelected?.servicos_vinculados?.map((s : any) => s.id) || [];
     this.listOptionsParcelas=[]
 
+    const servicoTotal = this.planoSelected?.servicos_vinculados?.reduce((acc: number, s: any) => {
+      return acc + (s.valor || 0);
+    }, 0) || 0;
+
     if(this.planoSelected.valor_total){
-      this.parcelamentoControls.get('valor_total')?.setValue(this.planoSelected.valor_total)
+
+      this.parcelamentoControls.get('valor_total')?.setValue(this.planoSelected.valor_total + servicoTotal)
 
       if(this.planoSelected.numero_parcelas){
         for(let i = 1 ; i <= this.planoSelected.numero_parcelas; i++){
           this.listOptionsParcelas.push({
             number: i,
-            value: this.planoSelected.valor_total / i
+            value: (this.planoSelected.valor_total + servicoTotal) / i
           })
         }
       }
@@ -546,7 +551,8 @@ export class ContratoFormComponent {
         "base64": "",
         "descricao": "",
         "nome": "",
-        "tipo": ""
+        "tipo": "",
+        "id": null
       }
     )
   }

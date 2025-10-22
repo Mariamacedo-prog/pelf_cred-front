@@ -10,7 +10,7 @@
 <div class="input-file-area">
   <p class="input-file-titulo">{{nome}}</p>
   <input *ngIf="!view" type="file" [accept]="accept" (change)="onFileSelected($event)" #fileInput style="display: none" />
-  <button *ngIf="!view" mat-stroked-button color="primary" (click)="fileInput.click()">{{nomeBotao}}</button>
+  <button *ngIf="!view" mat-stroked-button color="primary" (click)="openFilePicker()">{{nomeBotao}}</button>
 </div>
 
 

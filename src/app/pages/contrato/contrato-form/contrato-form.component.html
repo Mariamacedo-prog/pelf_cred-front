@@ -160,7 +160,7 @@
                <div class="row" *ngIf="planoSelected.nome">
                   <mat-form-field *ngIf="planoSelected.servicos_vinculados && planoSelected.servicos_vinculados.length > 0">
                      <mat-label>Serviços vinculados ao Plano</mat-label>
-                     <mat-select  [value]="planoSelected.servicos_vinculados" disabled multiple>
+                     <mat-select  [value]="servicosVinculadosIds" disabled multiple>
                         @for (servico of listOptionsServicos; track servico) {
                            <mat-option [value]="servico.id">{{servico.nome ? servico.nome : ''}}</mat-option>
                         }
@@ -189,7 +189,7 @@
                      <div class="row">
                         <app-inputfile [nome]="anexosList[i]?.nome.length <= 25 ? anexosList[i]?.nome : anexosList[i]?.nome.slice(0, 25) + '...' " 
                            [view]="view"
-                           [fileInput]="anexosList[i]"  
+                           [previewFile]="anexosList[i]"  
                            (fileOutput)="saveFileBase64($event, i)" 
                            (fileSelected)="onFileSelected($event, i)"
                         ></app-inputfile>
