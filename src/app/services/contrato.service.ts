@@ -55,6 +55,24 @@ private baseUrl = environment.ANGULAR_API;
     });
   }
 
+  downloadPdf(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/pdf/contrato/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      },
+      responseType: 'blob'
+    });
+  }
+
+  downloadWord(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/word/contrato/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      },
+      responseType: 'blob' as 'json' 
+    });
+  }
+
   delete(id = null): Observable<any> {
     return this.http.delete(`${this.baseUrl}/contrato/${id}`, {
       headers: {

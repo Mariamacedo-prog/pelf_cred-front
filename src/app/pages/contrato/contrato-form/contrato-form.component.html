@@ -223,11 +223,27 @@
    </mat-tab-group>
 
  
+
+   
    <div class="button-area">
+      <div *ngIf="id">
+         <button matIconButton [matMenuTriggerFor]="menu" style="border: none; height: 40px; cursor: pointer;">
+            <mat-icon>download</mat-icon>
+         </button>
+         <mat-menu #menu="matMenu" >
+            <button mat-menu-item style="display: flex; align-items: center;" (click)="downloadWord()" >
+               <img src="assets/img/word-48.png" style="cursor: pointer; width: 24px; margin-right: 20px; margin-bottom: -5px;" alt="Word Selecionado" />
+               <span>Word</span>
+            </button>
+            <button mat-menu-item style="display: flex; align-items: center;" (click)="downloadPdf()" >
+               <img src="assets/img/pdf-48.png" style="cursor: pointer; width: 24px; margin-right: 20px; margin-bottom: -5px;" alt="Pdf Selecionado" />
+               <span>Pdf</span>
+            </button>
+         </mat-menu>
+      </div>
       <button mat-raised-button color="primary" *ngIf="id && !view" (click)="update()" style="z-index: 0; position: relative;">Atualizar</button>
       <button class="button-primary" mat-raised-button color="primary" *ngIf="!id" (click)="create()" style="z-index: 0; position: relative;">Cadastrar</button>
       <button mat-stroked-button color="accent" (click)="backPage()" style="z-index: 0; position: relative;">Voltar</button>
    </div>
-
   </mat-card>
 </div>

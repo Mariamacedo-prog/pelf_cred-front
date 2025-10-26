@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ServicoService } from '../../../services/servico.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-
+import {MatMenuModule} from '@angular/material/menu';
 
 
 @Component({
@@ -40,6 +40,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatSelectModule,
     MatDatepickerModule,
     InputfileComponent,
+    MatMenuModule,
     CommonModule],
   providers:[],
   templateUrl: './contrato-form.component.html',
@@ -156,7 +157,7 @@ export class ContratoFormComponent {
           this.item = data;
 
           this.formControls?.patchValue({
-            numero: data.documento || '',
+            numero: data.numero || '',
             nome: data.nome || '',
             documento: data.documento || '',
           });    
@@ -426,7 +427,7 @@ export class ContratoFormComponent {
     this.parcelamentoControls.get('data_inicio')?.setValue(null)
     this.parcelamentoControls.get('meio_pagamento')?.setValue(0)
     this.servicosVinculadosIds = [];
-
+    this.listOptionsParcelas=[]
     this.planoSelected = {}
     const input = event?.target?.value;
     this.loadingPlano = true;
@@ -442,8 +443,6 @@ export class ContratoFormComponent {
       this.formControls?.get('plano_id')?.setValue(value.id)
     }
     this.planoSelected = value;
-
-    console.log(this.planoSelected)
 
     this.servicosVinculadosIds = this.planoSelected?.servicos_vinculados?.map((s : any) => s.id) || [];
     this.listOptionsParcelas=[]
@@ -505,7 +504,6 @@ export class ContratoFormComponent {
     const dataInicio = new Date(rawDataInicio);
 
     if (isNaN(dataInicio.getTime())) {
-      console.warn('Data início inválida:', rawDataInicio);
       return;
     }
 
@@ -518,14 +516,18 @@ export class ContratoFormComponent {
   }
 
   addMonthsToDate(data: Date, meses: number): Date {
-    const newDate = new Date(data);
-    newDate.setMonth(newDate.getMonth() + meses);
+    if(data){
+      const newDate = new Date(data);
+      newDate.setMonth(newDate.getMonth() + meses);
 
-    if (newDate.getDate() !== data.getDate()) {
-      newDate.setDate(0);
+      if (newDate.getDate() !== data.getDate()) {
+        newDate.setDate(0);
+      }
+
+      return newDate;
+    }else{
+      return new Date();
     }
-
-    return newDate;
   }
 
 
@@ -585,4 +587,43 @@ export class ContratoFormComponent {
 
     this.parcelamentoControls.get('taxa_juros')?.setValue(valorDecimal);
   }
+
+
+  downloadPdf(){
+       this.service.downloadPdf(this.id).subscribe(
+        (data: Blob) => {
+            const blob = new Blob([data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `contrato${this.formControls?.get("numero")?.value ? ('_' + this.formControls?.get("numero")?.value) : ''}.pdf`;
+            a.click();
+
+            window.URL.revokeObjectURL(url);
+        },
+        error => {
+          this.toast.show('error', "Erro!", typeof error?.error?.detail === 'string' ? error.error.detail : 
+              'Ocorreu um erro!')
+        }
+    );
+  }
+
+  downloadWord() {
+    this.service.downloadWord(this.id).subscribe((data: Blob) => {
+      const blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `contrato${this.formControls?.get("numero")?.value ? ('_' + this.formControls?.get("numero")?.value) : ''}.docx`;
+      a.click();
+      window.URL.revokeObjectURL(url)
+    },
+    error => {
+      this.toast.show('error', "Erro!", typeof error?.error?.detail === 'string' ? error.error.detail : 
+          'Ocorreu um erro!')
+    }
+  )}
 }
