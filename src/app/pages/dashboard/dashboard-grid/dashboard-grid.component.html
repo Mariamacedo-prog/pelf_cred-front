@@ -1,0 +1,88 @@
+
+<div class="page-container">
+    <app-box-totalizado [data]="totalizador"/>
+
+    <div class="content-header">
+        <h1>Listagem de Transações</h1>
+        <div class="header-grid">
+            <mat-form-field class="search-field">
+                <mat-label>Status da transação</mat-label>
+                <mat-select  [(ngModel)]="searchTerm" (selectionChange)="find($event)">
+                @for (option of listOptionsStatus; track option) {
+                    <mat-option [value]="option.value">{{option.label}}</mat-option>
+                }
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="buttons-area">
+        <button *ngIf="this.access !== 'restrito'"  class="icon-blue" mat-icon-button (click)="generateExcel()"> <mat-icon >download</mat-icon></button>
+        <button mat-stroked-button color="accent" (click)="clearSearch()">Limpar Filtro</button>
+        </div>
+    </div>
+  
+
+
+
+  <!--  
+    <div *ngIf="loading" class="loading-overlay">
+      <div class="spinner"></div>
+    </div> 
+  -->
+
+  <div *ngIf="loading" style="display: flex; align-items: center; justify-content: center;">
+    <div class="meu-loading-spinner"></div>
+  </div>
+  
+  <table mat-table [dataSource]="this.data" class="mat-elevation-z8">
+    <ng-container matColumnDef="numero_parcela">
+        <th mat-header-cell *matHeaderCellDef > Número da parcela</th>
+        <td mat-cell *matCellDef="let element" > {{element?.numero_parcela || ''}} </td>
+    </ng-container>
+    <ng-container matColumnDef="valor">
+        <th mat-header-cell *matHeaderCellDef > Valor </th>
+        <td mat-cell *matCellDef="let element"> {{element?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || ''}} </td>
+    </ng-container>
+    <ng-container matColumnDef="data_vencimento">
+        <th mat-header-cell *matHeaderCellDef > Data de Vencimento </th>
+        <td mat-cell *matCellDef="let element">{{ element?.data_vencimento ? (element?.data_vencimento | date: 'dd/MM/yyyy') : '' }} </td>
+    </ng-container>
+    <ng-container matColumnDef="data_pagamento">
+        <th mat-header-cell *matHeaderCellDef > Data de Pagamento </th>
+        <td mat-cell *matCellDef="let element"> {{ element?.data_pagamento ? (element?.data_pagamento | date: 'dd/MM/yyyy') : '' }} </td>
+    </ng-container>
+    <ng-container matColumnDef="status_parcela">
+        <th mat-header-cell *matHeaderCellDef > Status </th>
+        <td mat-cell *matCellDef="let element"> {{element?.status_parcela || ''}} </td>
+    </ng-container>
+    <ng-container matColumnDef="actions" class="">
+        <th mat-header-cell *matHeaderCellDef > Ações </th>
+        <td mat-cell *matCellDef="let element">
+            <button *ngIf="this.access === 'total'" class="icon-editar" mat-icon-button (click)="openTransacaoModal(element)">
+                <mat-icon >edit</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+    
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator
+    *ngIf="!loading"
+    [length]="length" 
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="true"
+    [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
+    [pageIndex]="pageIndex"
+    (page)="handlePageEvent($event)">
+  </mat-paginator>
+</div>
+
+
+
+
+
+
+
+
+      

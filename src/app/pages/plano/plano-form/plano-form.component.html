@@ -50,6 +50,14 @@
               }
             </mat-select>
           </mat-form-field>
+          <mat-form-field>
+            <mat-label>Tipo de pagamento</mat-label>
+            <mat-select formControlName="tipo_pagamento">
+              @for (option of listOptionsPag; track option) {
+                <mat-option [value]="option.value">{{option.label}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="row" *ngIf="listOptionsServicos">
           <mat-form-field>

@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class MenuService {
   menu = [
+    {"icon": "dashboard", "value": "dashboard", "label": "Dashboard", "route": "/dashboard/lista", id: 7, principal: true},
     {"icon": "group", "value": "usuario", "label": "Usuários", "route": "/usuario/lista", id: 1, principal: false},
     {"icon": "tag_faces", "value": "cliente", "label": "Clientes", "route": "/cliente/lista", id: 2, principal: false},
     {"icon": "radio_button_unchecked", "label": "Serviços", "value": "servico",   "route": "/servico/lista", id: 3, principal: false},

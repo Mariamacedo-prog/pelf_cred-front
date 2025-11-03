@@ -13,7 +13,7 @@ import SignaturePad from 'signature_pad';
 export class SignaturePadComponent {
   @ViewChild('signaturePad', { static: true }) signaturePadElement!: ElementRef<HTMLCanvasElement>;
   private signaturePad!: SignaturePad;
-  @Input() active: any;
+  @Input() name: any;
 
   @Output() dataEvent = new EventEmitter<any>();
 
@@ -28,7 +28,7 @@ export class SignaturePadComponent {
   saveSignature(): void {
     const base64Data = this.signaturePad.toDataURL(); 
 
-    this.dataEvent.emit({nome: this.active, base64: base64Data});
+    this.dataEvent.emit({nome: this.name, base64: base64Data});
     this.signaturePad.clear();
   }
 }

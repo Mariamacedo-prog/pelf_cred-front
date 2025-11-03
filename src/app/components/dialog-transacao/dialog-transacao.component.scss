@@ -1,0 +1,127 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  position: relative;
+  min-width: 300px;
+  max-width: 500px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.close-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: var(--main-white);
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--main-white);
+  margin: 0px;
+  padding: 20px 0px;
+  .modal-icon{
+    font-size: 55px; 
+    width: 55px;
+    height: 55px;
+    padding: 20px;
+  }
+  .modal-title{
+    font-size: 18px;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+  }
+}
+
+.modal-success{
+  background-color: var(--main-success-green);
+}
+
+.modal-error{
+  background-color: var(--main-error-red);
+}
+
+.modal-warming{
+  background-color: var(--main-warming-yellow);
+}
+
+
+.modal-body{
+  padding: 20px;
+  .modal-text{
+    font-size: 16px;
+    color: var(--main-gray-dark);
+  }
+}
+
+.modal-footer{
+  display: flex;
+  align-items: center;
+  justify-content:space-between;
+  width: 100%;
+  .positiveButton, .negativeButton{
+    padding: 10px;
+    margin: 5px;
+    border-radius: 12px;
+    width: 50%;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .negativeButton{
+    color: var(--main-error-red);
+    border: 2px solid var(--main-error-red);
+     transition: all ease 0.4s;
+  }
+  .positiveButton{
+    color: var(--main-success-green);
+    border: 2px solid var(--main-success-green);
+     transition: all ease 0.4s;
+  }
+
+  .negativeButton:hover{
+    color: var(--main-white);
+    background-color: var(--main-error-red);
+  }
+  .positiveButton:hover{
+    color: var(--main-white);
+    background-color: var(--main-success-green);
+  }
+}
+
+
+
+.user-photo{
+    img{
+        padding: 20px;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center; 
+    }
+    align-items: self-end;
+    button {
+    }
+}

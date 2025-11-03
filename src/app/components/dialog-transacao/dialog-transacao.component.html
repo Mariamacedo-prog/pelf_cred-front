@@ -1,0 +1,56 @@
+<div class="modal-backdrop" *ngIf="show" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <button class="close-button" (click)="onClose()">×</button>
+    </div>
+    <ng-content></ng-content>
+    <div class="modal-body">
+      <div class="modal-text">
+        <p><b>ID:</b> {{data.id || ''}}</p>
+      </div>
+      <div class="modal-text">
+        <p><b>PARCELA:</b> {{data.numero_parcela || ''}}</p>
+      </div>
+       <div class="modal-text">
+       <p><b>STATUS:</b> {{data.status_parcela || ''}}</p>
+      </div>
+       <div class="modal-text">
+       <p><b>DATA DE VENCIMENTO:</b> {{data?.data_vencimento ? (data?.data_vencimento | date: 'dd/MM/yyyy') : ''}}</p>
+      </div>
+       <div class="modal-text">
+        <p><b>VALOR:</b> {{data?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || ''}}</p>
+      </div>
+    </div>
+    <mat-card-content class="row" [formGroup]="formControls" *ngIf="anexoControls.get('base64')?.value?.length != 0">
+       <mat-form-field>
+          <mat-label>Data Pagamento</mat-label>
+          <input matInput 
+            formControlName="data_pagamento"
+            placeholder="DD/MM/YYYY"
+            [matDatepicker]="datapagamento"
+            [max]="hoje"
+          >
+          <mat-datepicker-toggle matIconSuffix [for]="datapagamento"></mat-datepicker-toggle>
+          <mat-datepicker #datapagamento></mat-datepicker>
+      </mat-form-field>
+    </mat-card-content>
+    <div class="row user-photo">
+        <div *ngIf="anexoControls.get('base64')?.value?.length != 0" >
+            <img *ngIf="anexoControls.get('tipo')?.value != 'application/pdf'" [src]="anexoControls.get('base64')?.value" class="user-img" >
+            <img *ngIf="anexoControls.get('tipo')?.value == 'application/pdf'" src="assets/img/pdf-icon.png" class="user-img" >
+        </div>
+         <label style="cursor: pointer;" >
+            <input type="file" accept=".jpg, .jpeg, .png, .pdf" #fileInputTransacao (change)="onSelectPicture($event)" hidden />
+            <button mat-icon-button type="button" aria-label="Upload file" (click)="openFileSelector()">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </label>
+    </div>
+    <div class="modal-footer">
+      <button *ngIf="editModal" class="positiveButton" (click)="onPositiveClick()" color="primary">CONFIRMAR</button>
+      <button class="negativeButton" (click)="onCancelClick()" color="primary">VOLTAR </button>
+    </div>
+  </div>
+</div>
+
+

@@ -88,4 +88,36 @@ private baseUrl = environment.ANGULAR_API;
       }
     });
   }
+
+  send_to_signature(id: string): Observable<any> {
+     return this.http.put(`${this.baseUrl}/contrato/${id}/enviar-para-assinatura`, null,{
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+  }
+
+  send_to_edict(id: string): Observable<any> {
+     return this.http.put(`${this.baseUrl}/contrato/${id}/enviar-para-edicao`, null,{
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+  }
+
+  signature_mutuario(id: string, data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/contrato/${id}/assinar/cliente`, data, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+  }
+
+  signature_mutuante(id: string, data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/contrato/${id}/assinar/responsavel`, data, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+  }
 }

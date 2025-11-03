@@ -55,6 +55,11 @@ export class PlanoFormComponent {
     { label: '36x', value: 36},
   ]
 
+  listOptionsPag: any = [
+    { label: 'Mensal', value: 'MENSAL'},
+    { label: 'Semanal', value: 'SEMANAL'}
+  ]
+
   listOptionsServicos: any = [];
   
   constructor(
@@ -87,6 +92,7 @@ export class PlanoFormComponent {
       numero_parcelas: new FormControl(0, Validators.required),
       periodo_vigencia: new FormControl('', Validators.required),
       descricao: new FormControl(''),
+      tipo_pagamento: new FormControl('MENSAL'),
       avista: new FormControl(false),
       servicos_vinculados: new FormControl([])
     });
@@ -94,6 +100,7 @@ export class PlanoFormComponent {
       this.formControls.get('numero_parcelas')?.disable();
       this.formControls.get('avista')?.disable();
       this.formControls.get('servicos_vinculados')?.disable();
+      this.formControls.get('tipo_pagamento')?.disable();
     }
   }
   
@@ -112,6 +119,7 @@ export class PlanoFormComponent {
           numero_parcelas: data.numero_parcelas || '',
           periodo_vigencia: data.periodo_vigencia || '',
           descricao: data.descricao || '',
+          tipo_pagamento: data.tipo_pagamento || '',
           avista: data.avista,
           servicos_vinculados: data.servicos_vinculados || '',
         });
@@ -156,6 +164,7 @@ export class PlanoFormComponent {
         numero_parcelas: this.formControls?.get('numero_parcelas')?.value,
         periodo_vigencia: this.formControls?.get('periodo_vigencia')?.value,
         descricao: this.formControls?.get('descricao')?.value,
+        tipo_pagamento: this.formControls?.get('tipo_pagamento')?.value,
         avista: this.formControls?.get('avista')?.value,
         servicos_vinculados: this.formControls?.get('servicos_vinculados')?.value,
       };
@@ -185,6 +194,7 @@ export class PlanoFormComponent {
         numero_parcelas: this.formControls?.get('numero_parcelas')?.value,
         periodo_vigencia: this.formControls?.get('periodo_vigencia')?.value,
         descricao: this.formControls?.get('descricao')?.value,
+        tipo_pagamento: this.formControls?.get('tipo_pagamento')?.value,
         avista: this.formControls?.get('avista')?.value,
         servicos_vinculados: this.formControls?.get('servicos_vinculados')?.value,
       };

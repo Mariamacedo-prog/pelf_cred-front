@@ -1,0 +1,14 @@
+<div class="row-box">
+    @for (option of data; track option) {
+        <div [class]="`box ${option?.name || ''}`">
+            <mat-icon [class]="`icon`">{{option?.icon}}</mat-icon>
+            <div class="title">
+            {{option?.title}}
+            </div>
+            <div class="value">
+                {{option?.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || ''}}
+            </div>
+
+        </div>
+    }
+</div>

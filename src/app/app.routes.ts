@@ -36,4 +36,7 @@ export const routes: Routes = [
     { path: 'contrato/lista', loadComponent: () => import('./pages/contrato/contrato-grid/contrato-grid.component').then(c => c.ContratoGridComponent), canActivate: [authGuard]},
     { path: 'contrato/form/:id', loadComponent: () => import('./pages/contrato/contrato-form/contrato-form.component').then(c => c.ContratoFormComponent), canActivate: [authGuard]},
     { path: 'contrato/form/:id/:tela', loadComponent: () => import('./pages/contrato/contrato-form/contrato-form.component').then(c => c.ContratoFormComponent), canActivate: [authGuard]},
+
+    // Dashboard
+    { path: 'dashboard/lista', loadComponent: () => import('./pages/dashboard/dashboard-grid/dashboard-grid.component').then(c => c.DashboardGridComponent), canActivate: [authGuard]},
 ];

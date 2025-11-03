@@ -21,6 +21,11 @@ import { ServicoService } from '../../../services/servico.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
+import { SignaturePadComponent } from '../../../components/signature-pad/signature-pad.component';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { TransacaoService } from '../../../services/transacao.service';
+import { MatTableModule } from '@angular/material/table';
+import { DialogTransacaoComponent } from '../../../components/dialog-transacao/dialog-transacao.component';
 
 
 @Component({
@@ -31,6 +36,7 @@ import {MatMenuModule} from '@angular/material/menu';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    CommonModule,
     RouterModule, 
     MatButtonModule,
     MatDividerModule,
@@ -41,13 +47,18 @@ import {MatMenuModule} from '@angular/material/menu';
     MatDatepickerModule,
     InputfileComponent,
     MatMenuModule,
+    DialogTransacaoComponent,
+    SignaturePadComponent,
+    MatButtonToggleModule,
+    MatTableModule, 
     CommonModule],
   providers:[],
   templateUrl: './contrato-form.component.html',
   styleUrl: './contrato-form.component.scss'
 })
 export class ContratoFormComponent {
-  showSignature = true
+  access = 'total';
+  showSignature = false
   signButtomActive = ''
   id = '';
   valorFormatadoJuros: any = ''
@@ -79,11 +90,16 @@ export class ContratoFormComponent {
   planoSelected: any = {}
   loadingPlano = false;
 
+  transacoesList: any = []
+  displayedTransacoesCol: string[] = ['numero_parcela', 'valor', 'data_vencimento',  'data_pagamento',  'status_parcela',  'actions'];
+  transacaoSelected: any = {}
+  showModal: boolean = false;
+  editModal: boolean = false;
 
   selectedParcela: any = {};
   listOptionsServicos: any = [];
   listOptionsParcelas: any = []
-
+  status = {cobranca: null, contrato: null}
   item = {}
   constructor(
     private route: ActivatedRoute,
@@ -93,6 +109,7 @@ export class ContratoFormComponent {
     private vendedorService: VendedorService,
     private planoService: PlanoService,
     private servicoService: ServicoService,
+    private transacaoService: TransacaoService,
     private service:  ContratoService) {
   }
 
@@ -135,6 +152,7 @@ export class ContratoFormComponent {
     });
 
     this.clienteAssinaturaControls = new FormGroup({
+      id: new FormControl(null),
       image: new FormControl(null),
       base64: new FormControl(''),
       descricao: new FormControl(''),
@@ -143,6 +161,7 @@ export class ContratoFormComponent {
     });
 
     this.responsavelAssinaturaControls = new FormGroup({
+      id: new FormControl(null),
       image: new FormControl(null),
       base64: new FormControl(''),
       descricao: new FormControl(''),
@@ -164,6 +183,26 @@ export class ContratoFormComponent {
 
           if(data?.anexos_list){
             this.anexosList = data?.anexos_list
+          }
+
+          this.status = {
+            cobranca: data.status_cobranca || null, 
+            contrato: data.status_contrato || null
+          }
+
+          if(data.status_contrato == "ATIVO"){
+            this.transacaoService.list_all('', data.id).subscribe(
+              data => {
+                this.transacoesList = data.data || []
+              },
+              error => {
+                console.log(error, "error")
+              }
+            )
+          }
+
+          if(data.status_contrato == "PENDENTE_ASSINATURA"){
+            this.showSignature = true;
           }
          
           if(data?.parcelamento){
@@ -203,6 +242,7 @@ export class ContratoFormComponent {
 
           if(data?.cliente_assinatura){
             this.clienteAssinaturaControls?.patchValue({
+              id: data?.cliente_assinatura?.id  || null,
               image: data?.cliente_assinatura?.image  || null,
               base64: data?.cliente_assinatura?.base64  || null,
               descricao:  data?.cliente_assinatura?.descricao  || null,
@@ -213,11 +253,12 @@ export class ContratoFormComponent {
 
           if(data?.responsavel_assinatura){
             this.responsavelAssinaturaControls?.patchValue({
-              image: data?.cliente_assinatura?.image  || null,
-              base64: data?.cliente_assinatura?.base64  || null,
-              descricao: data?.cliente_assinatura?.descricao  || null,
-              nome: data?.cliente_assinatura?.nome  || null,
-              tipo: data?.cliente_assinatura?.tipo  || null,
+              id: data?.responsavel_assinatura?.id  || null,
+              image: data?.responsavel_assinatura?.image  || null,
+              base64: data?.responsavel_assinatura?.base64  || null,
+              descricao: data?.responsavel_assinatura?.descricao  || null,
+              nome: data?.responsavel_assinatura?.nome  || null,
+              tipo: data?.responsavel_assinatura?.tipo  || null,
             });
           }
 
@@ -252,6 +293,17 @@ export class ContratoFormComponent {
               }
             }
           }
+
+           this.parcelamentoControls.get('data_fim')?.disable();
+          if (this.view || data.status_contrato !== 'INICIADO') {
+            this.parcelamentoControls.get('data_inicio')?.disable();
+            this.parcelamentoControls.get('data_vigencia')?.disable();
+            this.parcelamentoControls.get('taxa_juros')?.disable();
+          } else {
+            this.parcelamentoControls.get('data_inicio')?.enable();
+            this.parcelamentoControls.get('data_vigencia')?.enable();
+            this.parcelamentoControls.get('taxa_juros')?.enable();
+          }
         },
         error => {
           this.toast.show('error', "Erro!", typeof error?.error?.detail === 'string' ? error.error.detail : 
@@ -261,7 +313,7 @@ export class ContratoFormComponent {
     );
   }
 
-  update(): void {
+  update(mutuante: any = {}, mutuario: any = {}): void {
     if (this.formControls.valid && this.parcelamentoControls.valid) {
         let data: any = {
           "cliente_id": this.formControls?.get('cliente_id')?.value,
@@ -273,6 +325,13 @@ export class ContratoFormComponent {
           anexos_list: this.anexosList
         };
 
+      if(mutuante?.base64){
+        data.responsavel_assinatura = mutuante;
+      }
+      
+      if(mutuario?.base64){
+        data.cliente_assinatura = mutuario;
+      }
 
       this.service.edit(this.id, data).subscribe(
         data => {
@@ -515,19 +574,35 @@ export class ContratoFormComponent {
     return option1 && option2 ? option1.number === option2.number : option1 === option2;
   }
 
-  addMonthsToDate(data: Date, meses: number): Date {
+  addMonthsToDate(data: Date, numero: number): Date {
     if(data){
-      const newDate = new Date(data);
-      newDate.setMonth(newDate.getMonth() + meses);
-
-      if (newDate.getDate() !== data.getDate()) {
+      let newDate = new Date(data);
+/*       if (newDate.getDate() !== data.getDate()) {
         newDate.setDate(0);
+      } */
+      if(this.planoSelected.tipo_pagamento == 'MENSAL'){
+        newDate.setMonth(newDate.getMonth() + numero);
+      }
+
+      if (this.planoSelected.tipo_pagamento === 'SEMANAL') {
+        const novaData = new Date(newDate);
+
+        const diasParaSomar = 7 * numero;
+
+        novaData.setDate(novaData.getDate() + diasParaSomar);
+        newDate = novaData;
       }
 
       return newDate;
     }else{
       return new Date();
     }
+  }
+
+  openTransacaoModal(event: any, edit: boolean){
+    this.transacaoSelected = event;
+    this.showModal = true;
+    this.editModal = edit;
   }
 
 
@@ -589,6 +664,49 @@ export class ContratoFormComponent {
   }
 
 
+  receiveSignImage(event: any){
+    if(event.base64){
+      let anexo = {
+        id: null,
+        image: null,
+        base64: event.base64 || '',
+        descricao: `assinatura ${event.nome}` || '',
+        nome: `${event.nome}.jpeg` || '',
+        tipo: 'image/jpeg'
+      }
+      if(event.nome == 'MUTUANTE'){
+        anexo.id = this.responsavelAssinaturaControls?.get('id')?.value || null,
+        this.service.signature_mutuante(this.id, anexo).subscribe(
+          result => {
+            console.log(result)
+            this.toast.show('success', "Sucesso!",'Contrato retornou para edição!');
+            this.location.back();
+          },
+          error => {
+            this.loadingVendedor = false;
+              this.toast.show('error', "Erro!", error.error.detail || 
+                'Ocorreu um erro, tente novamente')
+          }
+        );
+      } else {
+        anexo.id = this.clienteAssinaturaControls?.get('id')?.value || null,
+        this.service.signature_mutuario(this.id, anexo).subscribe(
+          result => {
+            console.log(result)
+            this.toast.show('success', "Sucesso!",'Contrato retornou para edição!');
+            this.location.back();
+          },
+          error => {
+            this.loadingVendedor = false;
+              this.toast.show('error', "Erro!", error.error.detail || 
+                'Ocorreu um erro, tente novamente')
+          }
+        );
+      }
+    }
+  }
+
+
   downloadPdf(){
        this.service.downloadPdf(this.id).subscribe(
         (data: Blob) => {
@@ -626,4 +744,27 @@ export class ContratoFormComponent {
           'Ocorreu um erro!')
     }
   )}
+
+  sendToSignature() {
+    this.service.send_to_signature(this.id).subscribe((res) => {
+      console.log(res)
+      this.toast.show('success', "Sucesso!",'Contrato enviado para assinatura!');
+      this.location.back();
+    },
+    error => {
+      this.toast.show('error', "Erro!", typeof error?.error?.detail === 'string' ? error.error.detail : 
+          'Ocorreu um erro!')
+    })
+  }
+
+  sendToEdit(){
+    this.service.send_to_edict(this.id).subscribe((res) => {
+      this.toast.show('success', "Sucesso!",'Contrato retornou para edição!');
+      this.location.back();
+    },
+    error => {
+      this.toast.show('error', "Erro!", typeof error?.error?.detail === 'string' ? error.error.detail : 
+          'Ocorreu um erro!')
+    })
+  }
 }
