@@ -9,6 +9,7 @@ import { TransacaoService } from '../../services/transacao.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCardModule } from '@angular/material/card';
 import { ToastService } from '../../services/toast';
+import { InputfileComponent } from '../inputfile/inputfile.component';
 
 @Component({
   selector: 'app-dialog-transacao',
@@ -19,6 +20,7 @@ import { ToastService } from '../../services/toast';
     MatCardModule,
     ReactiveFormsModule,
     MatDatepickerModule,
+    InputfileComponent,
     MatDialogModule],
   templateUrl: './dialog-transacao.component.html',
   styleUrl: './dialog-transacao.component.scss'
@@ -31,7 +33,9 @@ export class DialogTransacaoComponent {
   @ViewChild('fileInputTransacao')  fileInput!: ElementRef<HTMLInputElement>;
   formControls!: FormGroup;
   anexoControls!: FormGroup;
-  hoje = new Date(); 
+  hoje = new Date();
+  anexo: any = {};
+  valorFormatado: any = ''
 
   constructor(
     private location: Location,
@@ -48,9 +52,9 @@ export class DialogTransacaoComponent {
     this.formControls = new FormGroup({
       comprovante_numero: new FormControl(this.data.comprovante_numero || "123"),
       data_pagamento: new FormControl(this.data.data_pagamento || this.hoje || null),
-      meio_pagamento:  new FormControl(this.data.meio_pagamento || null)
+      meio_pagamento:  new FormControl(this.data.meio_pagamento || null),
+      valor_pago:  new FormControl(this.data.valor_pago || null)
     });
-
     this.anexoControls = new FormGroup({
       id: new FormControl(null),
       image: new FormControl(null),
@@ -59,16 +63,17 @@ export class DialogTransacaoComponent {
       nome: new FormControl(''),
       tipo: new FormControl('')
     });
+
+    if(this.data.valor_pago){
+      const valor = this.data.valor_pago;
+      const resultado = valor.toFixed(2);
+      this.formatarValor(`${resultado}`)
+    }
   }
 
   onPositiveClick(): void {
     let body = this.formControls.getRawValue();
-
-    body.status_parcela = 'PAGA'
-    body.status_comprovante  = 'EM_ANALISE'
-
     body.anexo = this.anexoControls.getRawValue();
-
     this.transacaoService.edit(this.data.id, body).subscribe(
       data => {
           this.toast.show('success', "Sucesso!", data.detail ?? 'Transação atualizado com sucesso!');
@@ -115,5 +120,62 @@ export class DialogTransacaoComponent {
 
   openFileSelector(){
     this.fileInput.nativeElement.click();
+  }
+
+  
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (this.anexo) {
+      console.log('Nome do arquivo:', file.name);
+      console.log('Tamanho do arquivo:', file.size);
+      this.anexoControls?.patchValue({
+        image: '',
+        base64: event.base64 || '',
+        descricao: '',
+        nome: event.name || '',
+        tipo: event.type || '',
+      });
+    }
+  }
+  saveFileBase64(event: any){
+    this.anexo.base64 = event.base64;
+    this.anexo.nome = event.name;
+    this.anexo.tipo = event.type;
+    this.anexoControls?.patchValue({
+      image: '',
+      base64: event.base64 || '',
+      descricao: '',
+      nome: event.name || '',
+      tipo: event.type || '',
+    });
+  }
+
+  blockNegative(event: KeyboardEvent) {
+    if (event.key === '-' || event.key === '+') {
+      event.preventDefault();
+    }
+  }
+
+  onChangeValor(event: any){
+    const input = event.target as HTMLInputElement;
+    const value = input?.value;
+    this.formatarValor(value)
+  }
+
+  formatarValor(value: string): void {
+    let digits = value.replace(/\D/g, '');
+    digits = digits.replace(/^0+/, '') || '0';
+
+    while (digits.length < 3) {
+      digits = '0' + digits;
+    }
+
+    const reais = digits.slice(0, -2);
+    const centavos = digits.slice(-2);
+    this.valorFormatado = `R$ ${parseInt(reais, 10)},${centavos}`;
+
+    const valorDecimal = parseFloat(`${reais}.${centavos}`);
+
+    this.formControls.get('valor_pago')?.setValue(valorDecimal);
   }
 }

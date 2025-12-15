@@ -10,10 +10,10 @@
       <mat-tab label="Contrato" class="tab-1" >
          <mat-card-content [formGroup]="formControls">
 
-            <div class="row" *ngIf="!view && status.contrato == 'INICIADO'">
+            <div class="row" *ngIf="!view">
                <mat-form-field appearance="fill">
                   <mat-label>Nome do Cliente ou Documento</mat-label>
-                  <input [readonly]="view || status.contrato != 'INICIADO'" [value]="clientSelected?.nome || ''" [matAutocomplete]="clienteAuto" matInput (keyup)="searchClient($event)"  [formControl]="clientControl" />
+                  <input [readonly]="view" [value]="clientSelected?.nome || ''" [matAutocomplete]="clienteAuto" matInput (keyup)="searchClient($event)"  [formControl]="clientControl" />
                     <mat-progress-spinner
                         *ngIf="loadingClient"
                         matSuffix
@@ -47,10 +47,10 @@
                </mat-form-field>
             </div>
             
-            <div class="row" *ngIf="!view && status.contrato == 'INICIADO'">
+            <div class="row" *ngIf="!view">
                <mat-form-field appearance="fill">
                   <mat-label>Nome do Vendedor ou Documento</mat-label>
-                  <input [readonly]="view  || status.contrato != 'INICIADO'" [value]="vendedorSelected?.nome  || ''" [matAutocomplete]="vendedorAuto" matInput (keyup)="searchVendedor($event)"  [formControl]="vendedorControl" />
+                  <input [readonly]="view" [value]="vendedorSelected?.nome  || ''" [matAutocomplete]="vendedorAuto" matInput (keyup)="searchVendedor($event)"  [formControl]="vendedorControl" />
                    <mat-progress-spinner
                      *ngIf="loadingVendedor"
                      matSuffix
@@ -83,10 +83,10 @@
                </mat-form-field>
             </div>
 
-            <div class="row" *ngIf="!view && status.contrato == 'INICIADO'">
+            <div class="row" *ngIf="!view">
                <mat-form-field appearance="fill">
                   <mat-label>Nome do Plano</mat-label>
-                  <input [readonly]="view  || status.contrato != 'INICIADO'" [value]="planoSelected?.nome  || ''" [matAutocomplete]="planoAuto" matInput (keyup)="searchPlano($event)"  [formControl]="planoControl" />
+                  <input [readonly]="view" [value]="planoSelected?.nome  || ''" [matAutocomplete]="planoAuto" matInput (keyup)="searchPlano($event)"  [formControl]="planoControl" />
      
                   <mat-autocomplete #planoAuto="matAutocomplete"  (optionSelected)="onPlanoOptionSelected($event.option.value)" [displayWith]="displayPlanoName">
                      <mat-option *ngFor="let option of planoList" [value]="option">
@@ -107,7 +107,7 @@
                <div class="row" *ngIf="listOptionsParcelas && listOptionsParcelas.length > 0">
                   <mat-form-field>
                      <mat-label>Opções de parcelas</mat-label>
-                     <mat-select [disabled]="view  || status.contrato != 'INICIADO'" [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
+                     <mat-select [disabled]="view" [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
                         @for (option of listOptionsParcelas; track option) {
                            <mat-option [value]="option"> {{option.number ? option.number + 'x' : ''}} de {{option.value ? option.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })  : ''}}</mat-option>
                         }
@@ -118,7 +118,7 @@
                   <mat-form-field>
                      <mat-label>Data Início</mat-label>
                      <input matInput 
-                        [readonly]="view  || status.contrato != 'INICIADO'"
+                        [readonly]="view"
                         formControlName="data_inicio"
                         (dateChange)="selectedDataInicio()"
                         placeholder="DD/MM/YYYY"
@@ -131,7 +131,7 @@
                      <mat-label>Data Fim</mat-label>
                      <input matInput
                         disable
-                        [readonly]="view  || status.contrato != 'INICIADO'"
+                        [readonly]="view"
                         formControlName="data_fim"
                         placeholder="DD/MM/YYYY"
                         [matDatepicker]="datafim"
@@ -142,7 +142,7 @@
                   <mat-form-field>
                      <mat-label>Data Vigência</mat-label>
                      <input matInput 
-                        [readonly]="view  || status.contrato != 'INICIADO'"
+                        [readonly]="view"
                         formControlName="data_vigencia"
                         placeholder="DD/MM/YYYY"
                         [matDatepicker]="datavigencia"
@@ -165,7 +165,7 @@
                   <mat-form-field appearance="fill">
                      <mat-label>Taxa de juros por atraso :</mat-label>
                        <input 
-                           [readonly]="view  || status.contrato != 'INICIADO'" 
+                           [readonly]="view" 
                            matInput 
                            [value]="valorFormatadoJuros"
                            (keydown)="blockNegativeJuros($event)"
@@ -193,7 +193,7 @@
                   
                      <mat-form-field appearance="fill">
                         <mat-label>Descrição:</mat-label>
-                        <textarea matInput [readonly]="view  || status.contrato != 'INICIADO'"  [ngModel]="anexosList[i]?.descricao" (ngModelChange)="onDescricaoAnexoChange($event, i)"></textarea>
+                        <textarea matInput [readonly]="view"  [ngModel]="anexosList[i]?.descricao" (ngModelChange)="onDescricaoAnexoChange($event, i)"></textarea>
                      </mat-form-field>
       
                      <button *ngIf="!view" class="icon-excluir" mat-icon-button (click)="deleteFile(i)">

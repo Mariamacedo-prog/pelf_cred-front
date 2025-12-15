@@ -12,11 +12,12 @@
 }
 
 .modal-content {
+  width: 50% !important;
   background: white;
   border-radius: 8px;
   position: relative;
   min-width: 300px;
-  max-width: 500px;
+  max-width: 100%;
   margin: 0px;
   padding: 0px;
 }
@@ -25,7 +26,7 @@
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  color: var(--main-white);
+  color: var(--main-gray-dark);
   background: transparent;
   border: none;
   font-size: 1.5rem;
@@ -37,7 +38,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  color: var(--main-white);
+  color: var(--main-gray-dark);
   margin: 0px;
   padding: 20px 0px;
   .modal-icon{
@@ -47,10 +48,10 @@
     padding: 20px;
   }
   .modal-title{
-    font-size: 18px;
-    font-weight: 200;
+    font-size: 20px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 5px;
+    letter-spacing: 2px;
   }
 }
 
@@ -68,6 +69,7 @@
 
 
 .modal-body{
+  width: calc(100% - 40px);
   padding: 20px;
   .modal-text{
     font-size: 16px;
@@ -124,4 +126,11 @@
     align-items: self-end;
     button {
     }
+}
+
+
+@media screen and (max-width: 700px) {
+  .modal-content {
+    width: 100% !important;
+  }
 }

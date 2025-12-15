@@ -38,6 +38,7 @@ export class ClientFormComponent {
   }
   formControls!: FormGroup;
   enderecoControls!: FormGroup;
+  enderecoComercialControls!: FormGroup;
   item = {}
   constructor(
     private validateService: ValidateService, 
@@ -76,6 +77,16 @@ export class ClientFormComponent {
       cidade: new FormControl('', Validators.required),
       uf: new FormControl('', Validators.required),
     });
+
+    this.enderecoComercialControls = new FormGroup({
+      cep: new FormControl(''),
+      rua: new FormControl(''),
+      numero: new FormControl(''),
+      bairro: new FormControl(''),
+      complemento: new FormControl(''),
+      cidade: new FormControl(''),
+      uf: new FormControl(''),
+    });
   }
   
   getUserById(id: string): void{
@@ -101,6 +112,16 @@ export class ClientFormComponent {
             uf: data?.endereco?.uf || '',
           });
 
+          this.enderecoComercialControls?.patchValue({
+            cep: data?.endereco_comercial?.cep || '',
+            numero: data?.endereco_comercial?.numero || '',
+            complemento: data?.endereco_comercial?.complemento || '',
+            rua: data?.endereco_comercial?.rua || '',
+            bairro: data?.endereco_comercial?.bairro || '',
+            cidade: data?.endereco_comercial?.cidade || '',
+            uf: data?.endereco_comercial?.uf || '',
+          });
+
           this.documentoLabel()
         },
         error => {
@@ -122,6 +143,10 @@ export class ClientFormComponent {
         endereco: this.enderecoControls.getRawValue()
       };
 
+      if(this.enderecoComercialControls.get('cep')?.value !== ''){
+        data.endereco_comercial = this.enderecoComercialControls.getRawValue()
+      }
+
       this.service.edit_client(this.id, data).subscribe(
         data => {
           this.toast.show('success', "Sucesso!", data.detail ?? 'Cliente/Empresa atualizada com sucesso!');
@@ -142,7 +167,7 @@ export class ClientFormComponent {
 
   create(): void {
     if (this.formControls.valid && this.enderecoControls.valid) {
-      let data = {
+      let data: any = {
         documento:  this.formControls?.get('documento')?.value,
         nome: this.formControls?.get('nome')?.value,
         email: this.formControls?.get('email')?.value,
@@ -150,6 +175,10 @@ export class ClientFormComponent {
         grupo_segmento: this.formControls?.get('grupo_segmento')?.value,
         endereco: this.enderecoControls.getRawValue()
       };
+
+      if(this.enderecoComercialControls.get('cep')?.value !== ''){
+        data.endereco_comercial = this.enderecoComercialControls.getRawValue()
+      }
 
       this.service.create_client(data).subscribe(
         data => {
@@ -209,6 +238,33 @@ export class ClientFormComponent {
     }
   }
 
+  buscarEnderecoComercial() {
+    if(this.enderecoComercialControls?.get('cep')?.value){
+      this.limparEnderecoComercial();
+      if (this.enderecoComercialControls?.get('cep')?.value.toString().length === 8) {
+        this.cepService.getAddressByCep(this.enderecoComercialControls?.get('cep')?.value)
+          .subscribe(
+            data => {
+              if(!data.erro){
+                this.enderecoComercialControls?.patchValue({
+                  rua: data.logradouro,
+                  bairro: data.bairro,
+                  cidade: data.localidade,
+                  uf: data.uf
+                });
+              }else{
+                this.toast.show('error', "Erro!",'Cep não localizado!');
+                this.limparEnderecoComercial();
+              }
+            },
+            error => {
+              console.error(error);
+            }
+          );
+      }
+    }
+  }
+
   limparEndereco(){
      this.enderecoControls?.patchValue({
       rua: '',
@@ -217,6 +273,16 @@ export class ClientFormComponent {
       uf: '',
     });
   }
+
+  limparEnderecoComercial(){
+     this.enderecoComercialControls?.patchValue({
+      rua: '',
+      bairro: '',
+      cidade: '',
+      uf: '',
+    });
+  }
+
 
   documentoLabel(){
     const value = this.formControls.get('documento')?.value || '';

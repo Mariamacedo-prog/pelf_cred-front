@@ -127,6 +127,51 @@
             </div>
          </mat-card-content>
       </mat-tab>
+
+      <mat-tab label="Endereço Comercial" class="tab-2">
+         <mat-card-content [formGroup]="enderecoComercialControls">
+            <mat-card-title>Endereço Comercial</mat-card-title>
+
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>CEP</mat-label>
+                     <input [readonly]="view" matInput formControlName="cep"  (keyup)="buscarEnderecoComercial()" maxlength="8"/>
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                     <mat-label>UF</mat-label>
+                     <input [readonly]="view" matInput formControlName="uf" />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                     <mat-label>Cidade</mat-label>
+                     <input [readonly]="view" matInput formControlName="cidade" />
+                  </mat-form-field>
+            </div>
+
+            <div class="row">
+               <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Rua</mat-label>
+                  <input [readonly]="view" matInput formControlName="rua" />
+               </mat-form-field>
+            </div>
+
+            <div class="row">
+               <mat-form-field appearance="fill">
+                  <mat-label>Número</mat-label>
+                  <input [readonly]="view" matInput formControlName="numero" />
+               </mat-form-field>
+
+               <mat-form-field appearance="fill">
+                  <mat-label>Bairro</mat-label>
+                  <input matInput formControlName="bairro" />
+               </mat-form-field>
+
+               <mat-form-field appearance="fill">
+                  <mat-label>Complemento</mat-label>
+                  <input matInput formControlName="complemento" />
+               </mat-form-field>
+            </div>
+         </mat-card-content>
+      </mat-tab>
    </mat-tab-group>
 
  

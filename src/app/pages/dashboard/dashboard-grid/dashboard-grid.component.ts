@@ -92,7 +92,7 @@ export class DashboardGridComponent {
     this.service.total_all(null, null).subscribe(
         result => {
           this.totalizador = [
-            { name: 'green', title: 'Total Pago', value: result.total_pago || 0, icon: 'local_atm'},
+            { name: 'green', title: 'Total Pago', value: result.total_pago, icon: 'local_atm'},
             { name: 'red', title: 'Total em Atraso', value: result.total_em_atraso || 0, icon: 'warning' },
             { name: 'blue', title: 'Total Futuro / Gerado', value: result.total_gerado || 0, icon: 'schedule' }
           ];      
