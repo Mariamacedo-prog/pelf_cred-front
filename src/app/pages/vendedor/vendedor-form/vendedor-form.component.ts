@@ -37,6 +37,7 @@ export class VendedorFormComponent {
   enderecoControls!: FormGroup;
   fotoControls!: FormGroup;
   @ViewChild('fileInput')  fileInput!: ElementRef<HTMLInputElement>;
+  valorFormatadoPct: any = '0,00'
 
   item = {}
   constructor(
@@ -64,6 +65,7 @@ export class VendedorFormComponent {
       nome: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       telefone: new FormControl('', [Validators.required,  Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]),
+      comissao_pct: new FormControl(0),
       rg: new FormControl('',  {
         validators: [this.validateService.validateRG],
         nonNullable: true
@@ -142,7 +144,14 @@ export class VendedorFormComponent {
             email: data.email || '',
             telefone: data.telefone || '',
             rg: data.rg || '',
+            comissao_pct: data.comissao_pct || 0,
           });
+
+          if(data.comissao_pct > 0){
+            const valor = Number(data.comissao_pct) || 0;
+            const resultado = valor.toFixed(2);
+            this.valorFormatadoPct = `% ${resultado.replace('.', ',')}`;
+          }
 
           if(data.endereco){
             this.enderecoControls?.patchValue({
@@ -182,9 +191,13 @@ export class VendedorFormComponent {
         email: this.formControls?.get('email')?.value,
         telefone: this.formControls?.get('telefone')?.value,
         rg: this.formControls?.get('rg')?.value,
-        endereco: this.enderecoControls.getRawValue(),
-        foto: this.fotoControls.getRawValue()
+        comissao_pct: this.formControls?.get('comissao_pct')?.value,
+        endereco: this.enderecoControls.getRawValue()
       };
+
+      if(this.fotoControls?.get('base64')?.value.length > 0){
+        data.foto = this.fotoControls.getRawValue()
+      }
 
       this.service.edit(this.id, data).subscribe(
         data => {
@@ -211,6 +224,7 @@ export class VendedorFormComponent {
         nome: this.formControls?.get('nome')?.value,
         email: this.formControls?.get('email')?.value,
         telefone: this.formControls?.get('telefone')?.value,
+        comissao_pct: this.formControls?.get('comissao_pct')?.value,
         rg: this.formControls?.get('rg')?.value,
         endereco: this.enderecoControls.getRawValue()
       };
@@ -284,6 +298,32 @@ export class VendedorFormComponent {
       cidade: '',
       uf: '',
     });
+  }
+
+
+  blockNegativePct(event: KeyboardEvent) {
+    if (event.key === '-' || event.key === '+') {
+      event.preventDefault();
+    }
+  }
+
+  onChangePct(event: any){
+    const input = event.target as HTMLInputElement;
+    const value = input?.value;
+    let digits = value.replace(/\D/g, '');
+    digits = digits.replace(/^0+/, '') || '0';
+
+    while (digits.length < 3) {
+      digits = '0' + digits;
+    }
+
+    const reais = digits.slice(0, -2);
+    const centavos = digits.slice(-2);
+    this.valorFormatadoPct = `% ${parseInt(reais, 10)},${centavos}`;
+
+    const valorDecimal = parseFloat(`${reais}.${centavos}`);
+
+    this.formControls.get('comissao_pct')?.setValue(valorDecimal);
   }
 
 

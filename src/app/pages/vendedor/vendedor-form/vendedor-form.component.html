@@ -59,7 +59,16 @@
                   <mat-error *ngIf="formControls.get('email')?.hasError('email') && !formControls.get('email')?.hasError('required')">
                      E-mail inválido.
                   </mat-error>
-                  
+               </mat-form-field>
+               <mat-form-field appearance="fill">
+                  <mat-label>Comissão :</mat-label>
+                     <input 
+                        [readonly]="view" 
+                        matInput 
+                        [value]="valorFormatadoPct"
+                        (keydown)="blockNegativePct($event)"
+                        (input)="onChangePct($event)"
+                     />
                </mat-form-field>
             </div>
 
