@@ -83,38 +83,49 @@
                </mat-form-field>
             </div>
 
-            <div class="row" *ngIf="!view">
-               <mat-form-field appearance="fill">
-                  <mat-label>Nome do Plano</mat-label>
-                  <input [readonly]="view" [value]="planoSelected?.nome  || ''" [matAutocomplete]="planoAuto" matInput (keyup)="searchPlano($event)"  [formControl]="planoControl" />
-     
-                  <mat-autocomplete #planoAuto="matAutocomplete"  (optionSelected)="onPlanoOptionSelected($event.option.value)" [displayWith]="displayPlanoName">
-                     <mat-option *ngFor="let option of planoList" [value]="option">
-                        {{ option?.nome }}
-                     </mat-option>
-                  </mat-autocomplete>
-
-                  <mat-progress-spinner
-                     *ngIf="loadingPlano"
-                     matSuffix
-                     diameter="20"
-                     mode="indeterminate"
-                  ></mat-progress-spinner>
-               </mat-form-field>
-            </div>
-
             <mat-card-content [formGroup]="parcelamentoControls">      
-               <div class="row" *ngIf="listOptionsParcelas && listOptionsParcelas.length > 0">
+               <div class="row">
+                  <mat-form-field appearance="fill">
+                     <mat-label>Valor total</mat-label>
+                        <input 
+                           [readonly]="view || status.contrato != 'INICIADO'" 
+                           matInput 
+                           [value]="valorTotalFormatado"
+                           (keydown)="blockNegative($event)"
+                           (input)="onChangeValorTotal($event)"
+                           />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                     <mat-label>Taxa de juros</mat-label>
+                        <input 
+                           [readonly]="view || status.contrato != 'INICIADO'" 
+                           matInput 
+                           [value]="valorFormatadoJuros"
+                           (keydown)="blockNegative($event)"
+                           (input)="onChangeJuros($event)"
+                           />
+                  </mat-form-field>
+                  <button mat-raised-button color="warn" *ngIf="id && !view && status.contrato == 'INICIADO'" (click)="onValorTotalSelected()" style="z-index: 0; position: relative;">SIMULAR</button>
+               </div>
+               <div class="row">
                   <mat-form-field>
+                     <mat-label>Tipo de pagamento</mat-label>
+                     <mat-select [disabled]="view || status.contrato != 'INICIADO'" formControlName="tipo_pagamento" (selectionChange)="selectedDataInicio()">
+                        @for (option of listOptionsPag; track option) {
+                           <mat-option [value]="option.value">{{option.label}}</mat-option>
+                        }
+                     </mat-select>
+                  </mat-form-field>
+                  <mat-form-field *ngIf="listOptionsParcelas && listOptionsParcelas.length > 0">
                      <mat-label>Opções de parcelas</mat-label>
-                     <mat-select [disabled]="view" [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
+                     <mat-select [disabled]="view || status.contrato != 'INICIADO'" [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
                         @for (option of listOptionsParcelas; track option) {
                            <mat-option [value]="option"> {{option.number ? option.number + 'x' : ''}} de {{option.value ? option.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })  : ''}}</mat-option>
                         }
                      </mat-select>
                   </mat-form-field>
                </div>
-               <div class="row" *ngIf="planoSelected.nome && this.parcelamentoControls.get('qtd_parcela')?.value">
+               <div class="row" *ngIf="this.parcelamentoControls.get('qtd_parcela')?.value">
                   <mat-form-field>
                      <mat-label>Data Início</mat-label>
                      <input matInput 
@@ -149,28 +160,6 @@
                      >
                      <mat-datepicker-toggle matIconSuffix [for]="datavigencia"></mat-datepicker-toggle>
                      <mat-datepicker #datavigencia></mat-datepicker>
-                  </mat-form-field>
-               </div>
-         
-
-               <div class="row" *ngIf="planoSelected.nome">
-                  <mat-form-field *ngIf="planoSelected.servicos_vinculados && planoSelected.servicos_vinculados.length > 0">
-                     <mat-label>Serviços vinculados ao Plano</mat-label>
-                     <mat-select  [value]="servicosVinculadosIds" disabled multiple>
-                        @for (servico of listOptionsServicos; track servico) {
-                           <mat-option [value]="servico.id">{{servico.nome ? servico.nome : ''}}</mat-option>
-                        }
-                     </mat-select>
-                  </mat-form-field>
-                  <mat-form-field appearance="fill">
-                     <mat-label>Taxa de juros por atraso :</mat-label>
-                       <input 
-                           [readonly]="view" 
-                           matInput 
-                           [value]="valorFormatadoJuros"
-                           (keydown)="blockNegativeJuros($event)"
-                           (input)="onChangeJuros($event)"
-                        />
                   </mat-form-field>
                </div>
             </mat-card-content>

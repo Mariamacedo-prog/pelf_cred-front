@@ -14,10 +14,8 @@ import { ClientService } from '../../../services/client.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ContratoService } from '../../../services/contrato.service';
 import { VendedorService } from '../../../services/vendedor.service';
-import { PlanoService } from '../../../services/plano.service';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-import { ServicoService } from '../../../services/servico.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
@@ -62,9 +60,10 @@ export class ContratoFormComponent {
   signButtomActive = ''
   id = '';
   valorFormatadoJuros: any = ''
+  valorTotalFormatado: any = ''
   private typingTimer: any;
   view = false;
-
+  maxParcelas = 36;
   label = {
     nome: 'Nome',
     documento: 'CPF'
@@ -74,21 +73,20 @@ export class ContratoFormComponent {
   clienteAssinaturaControls!: FormGroup;
   responsavelAssinaturaControls!: FormGroup;
   anexosList: any = [];
-  servicosVinculadosIds: any = [];
   clientControl = new FormControl('');
   clientList: any = []
   clientSelected: any = {}
   loadingClient = false;
 
+  listOptionsPag: any = [
+    { label: 'Mensal', value: 'MENSAL'},
+    { label: 'Semanal', value: 'SEMANAL'}
+  ]
+
   vendedorControl = new FormControl('');
   vendedorList: any = []
   vendedorSelected: any = {}
   loadingVendedor = false;
-
-  planoControl = new FormControl('');
-  planoList: any = []
-  planoSelected: any = {}
-  loadingPlano = false;
 
   transacoesList: any = []
   displayedTransacoesCol: string[] = ['numero_parcela', 'valor', 'data_vencimento',  'data_pagamento',  'status_parcela',  'actions'];
@@ -97,8 +95,7 @@ export class ContratoFormComponent {
   editModal: boolean = false;
 
   selectedParcela: any = {};
-  listOptionsServicos: any = [];
-  listOptionsParcelas: any = []
+  listOptionsParcelas: any = [];
   status = {cobranca: null, contrato: null}
   item = {}
   constructor(
@@ -107,8 +104,6 @@ export class ContratoFormComponent {
     private location: Location,
     private clientService: ClientService,
     private vendedorService: VendedorService,
-    private planoService: PlanoService,
-    private servicoService: ServicoService,
     private transacaoService: TransacaoService,
     private service:  ContratoService) {
   }
@@ -124,13 +119,10 @@ export class ContratoFormComponent {
       }
     });
 
-    this.getServicoList()
-
     this.formControls = new FormGroup({
       numero: new FormControl(0),
       cliente_id: new FormControl('', Validators.required),
       vendedor_id: new FormControl(''),
-      plano_id: new FormControl('', [Validators.required]),
       nome: new FormControl(''),
       documento: new FormControl(''),
     });
@@ -142,6 +134,7 @@ export class ContratoFormComponent {
       data_vigencia: new FormControl(null),
       meio_pagamento: new FormControl('', Validators.required),
       valor_entrada: new FormControl(0),
+      tipo_pagamento: new FormControl(null),
       valor_parcela: new FormControl(0, Validators.required),
       valor_total: new FormControl(0, Validators.required),
       taxa_juros: new FormControl(0),
@@ -209,15 +202,35 @@ export class ContratoFormComponent {
             this.parcelamentoControls?.patchValue({
               id: data?.parcelamento?.id  || null,
               meio_pagamento: data?.parcelamento?.meio_pagamento  || null,
-              valor_entrada: data?.parcelamento?.valor_entrada  || null,
-              valor_parcela:data?.parcelamento?.valor_parcela  || null,
-              valor_total: data?.parcelamento?.valor_total  || null,
-              taxa_juros: data?.parcelamento?.taxa_juros  || null,
-              qtd_parcela:data?.parcelamento?.qtd_parcela  || null,
-              avista: data?.parcelamento?.avista  || null,
+              valor_entrada: data?.parcelamento?.valor_entrada  || 0,
+              valor_parcela:data?.parcelamento?.valor_parcela  || 0,
+              valor_total: data?.parcelamento?.valor_total  || 0,
+              taxa_juros: data?.parcelamento?.taxa_juros  || 0,
+              qtd_parcela: data?.parcelamento?.qtd_parcela  || null,
+              avista: data?.parcelamento?.avista || false,
+              tipo_pagamento: data?.parcelamento?.tipo_pagamento  || null,
               data_ultimo_pagamento: data?.parcelamento?.data_ultimo_pagamento  || null,
               qtd_parcelas_pagas: data?.parcelamento?.qtd_parcelas_pagas  || null,
             });
+            
+            if(data?.parcelamento?.valor_total){
+              let taxaJuros = data?.parcelamento?.taxa_juros || 0;
+              let juros = taxaJuros == 0 ? 0 : (data?.parcelamento?.valor_total / 100) * taxaJuros;
+              for(let i = 1 ; i <= this.maxParcelas; i++){
+                this.listOptionsParcelas.push({
+                  number: i,
+                  value: (data?.parcelamento?.valor_total + juros) / i
+                })
+
+                if(data?.parcelamento?.qtd_parcela && (data?.parcelamento?.qtd_parcela == i)){
+                  this.selectedParcela = {
+                    number: i,
+                    value: (data?.parcelamento?.valor_total + juros) / i
+                  }
+                }
+              }
+            }
+         
 
             if(data?.parcelamento?.data_inicio){
               let dt_inicio = new Date(data?.parcelamento?.data_inicio);
@@ -237,6 +250,11 @@ export class ContratoFormComponent {
             if(data.parcelamento.taxa_juros){
               let juros = parseFloat(data?.parcelamento?.taxa_juros).toFixed(2).toString()
               this.valorFormatadoJuros = `% ${juros}`;
+            }
+
+            if(data.parcelamento.valor_total){
+              let valor = parseFloat(data?.parcelamento?.valor_total).toFixed(2).toString()
+              this.valorTotalFormatado = `R$ ${valor}`;
             }
           }
 
@@ -272,37 +290,15 @@ export class ContratoFormComponent {
             this.formControls?.get("vendedor_id")?.setValue(data.vendedor.id)
           }
 
-          if(data.plano){
-            this.planoSelected = data.plano;
-            this.formControls?.get("plano_id")?.setValue(data.plano.id)
-            
-            if(this.planoSelected.numero_parcelas){
-              this.servicosVinculadosIds = this.planoSelected?.servicos_vinculados?.map((s : any) => s.id) || [];
-              for(let i = 1 ; i <= this.planoSelected.numero_parcelas; i++){
-                this.listOptionsParcelas.push({
-                  number: i,
-                  value: data?.parcelamento?.valor_total / i
-                })
-
-                if(data?.parcelamento?.qtd_parcela == i){
-                  this.selectedParcela = {
-                    number: i,
-                    value: data?.parcelamento?.valor_total / i
-                  }
-                }
-              }
-            }
-          }
-
            this.parcelamentoControls.get('data_fim')?.disable();
           if (this.view || data.status_contrato !== 'INICIADO') {
-            this.parcelamentoControls.get('data_inicio')?.disable();
+            this.parcelamentoControls.get('data_inicio')?.disable();  
             this.parcelamentoControls.get('data_vigencia')?.disable();
-            this.parcelamentoControls.get('taxa_juros')?.disable();
+            this.parcelamentoControls.get('tipo_pagamento')?.disable();
           } else {
             this.parcelamentoControls.get('data_inicio')?.enable();
             this.parcelamentoControls.get('data_vigencia')?.enable();
-            this.parcelamentoControls.get('taxa_juros')?.enable();
+            this.parcelamentoControls.get('tipo_pagamento')?.enable();
           }
         },
         error => {
@@ -318,7 +314,6 @@ export class ContratoFormComponent {
         let data: any = {
           "cliente_id": this.formControls?.get('cliente_id')?.value,
           "vendedor_id": this.formControls?.get('vendedor_id')?.value || null,
-          "plano_id": this.formControls?.get('plano_id')?.value,
           "nome": this.formControls?.get('nome')?.value  || null,
           "documento": this.formControls?.get('documento')?.value  || null,
           parcelamento: this.parcelamentoControls.getRawValue(),
@@ -356,7 +351,6 @@ export class ContratoFormComponent {
       let data: any = {
         "cliente_id": this.formControls?.get('cliente_id')?.value,
         "vendedor_id": this.formControls?.get('vendedor_id')?.value || null,
-        "plano_id": this.formControls?.get('plano_id')?.value,
         "nome": this.formControls?.get('nome')?.value  || null,
         "documento": this.formControls?.get('documento')?.value  || null,
         parcelamento: this.parcelamentoControls.getRawValue(),
@@ -385,21 +379,6 @@ export class ContratoFormComponent {
   backPage(){
     this.location.back();
   }
-
-  getServicoList(filtro: string = ''): void{
-    this.servicoService.get_all_info(filtro).subscribe(
-      result => {
-        if(result?.data?.length > 0){
-          this.listOptionsServicos = result?.data;
-        }
-      },
-      error => {
-        this.toast.show('error', "Erro!", typeof error?.error?.detail === 'string' ? error.error.detail : 
-            'Serviços não localizados!');
-      }
-    );
-  }
-
 
   /* Selecinar Vendedor */
   searchVendedor(event: any) {
@@ -475,71 +454,24 @@ export class ContratoFormComponent {
     return client ? client.nome : '';
   }
 
-  /* Selecinar Plano */
-  searchPlano(event: any) {
-    this.formControls?.get('plano_id')?.setValue('')
-    this.parcelamentoControls.get('valor_total')?.setValue(0)
-    this.parcelamentoControls.get('qtd_parcela')?.setValue(0)
-    this.parcelamentoControls.get('valor_parcela')?.setValue(0)
-    this.parcelamentoControls.get('avista')?.setValue(false)
-    this.parcelamentoControls.get('data_fim')?.setValue(null)
-    this.parcelamentoControls.get('data_inicio')?.setValue(null)
-    this.parcelamentoControls.get('meio_pagamento')?.setValue(0)
-    this.servicosVinculadosIds = [];
-    this.listOptionsParcelas=[]
-    this.planoSelected = {}
-    const input = event?.target?.value;
-    this.loadingPlano = true;
-    clearTimeout(this.typingTimer);
+  onValorTotalSelected (){
+    let newList = []
+    let taxaJuros = this.parcelamentoControls.get('taxa_juros')?.value || 0;
+    let juros = taxaJuros == 0 ? 0 : (this.parcelamentoControls.get('valor_total')?.value / 100) * taxaJuros;
+    for(let i = 1 ; i <= this.maxParcelas; i++){
+      newList.push({
+        number: i,
+        value: (this.parcelamentoControls.get('valor_total')?.value + juros) / i
+      })
 
-    this.typingTimer = setTimeout(() => {
-     this.findplano(input)
-     this.loadingPlano = false;
-    }, 2000);
-  }
-  onPlanoOptionSelected (value: any){
-    if(value.id){
-      this.formControls?.get('plano_id')?.setValue(value.id)
-    }
-    this.planoSelected = value;
-
-    this.servicosVinculadosIds = this.planoSelected?.servicos_vinculados?.map((s : any) => s.id) || [];
-    this.listOptionsParcelas=[]
-
-    const servicoTotal = this.planoSelected?.servicos_vinculados?.reduce((acc: number, s: any) => {
-      return acc + (s.valor || 0);
-    }, 0) || 0;
-
-    if(this.planoSelected.valor_total){
-
-      this.parcelamentoControls.get('valor_total')?.setValue(this.planoSelected.valor_total + servicoTotal)
-
-      if(this.planoSelected.numero_parcelas){
-        for(let i = 1 ; i <= this.planoSelected.numero_parcelas; i++){
-          this.listOptionsParcelas.push({
-            number: i,
-            value: (this.planoSelected.valor_total + servicoTotal) / i
-          })
+      if(this.parcelamentoControls.get('qtd_parcela')?.value && (this.parcelamentoControls.get('qtd_parcela')?.value == i)){
+        this.selectedParcela = {
+          number: i,
+          value: (this.parcelamentoControls.get('valor_total')?.value + juros) / i
         }
       }
     }
-  }
-  findplano(search: string){
-    this.loadingPlano = true;
-    this.planoService.get_all(search, 1, 100).subscribe(
-      result => {
-          this.planoList = result?.data ?? []
-          this.loadingPlano = false;
-      },
-      error => {
-          this.loadingPlano = false;
-          this.toast.show('error', "Erro!", error.error.detail || 
-            'Ocorreu um erro, tente novamente')
-      }
-    );
-  }
-  displayPlanoName(client: any): string {
-    return client ? client.nome : '';
+    this.listOptionsParcelas = newList;
   }
 
   changeParcelaOption(event: any){
@@ -557,6 +489,7 @@ export class ContratoFormComponent {
     }
     this.selectedDataInicio()
   }
+
 
   selectedDataInicio(){
     const rawDataInicio = this.parcelamentoControls.get('data_inicio')?.value;
@@ -577,14 +510,14 @@ export class ContratoFormComponent {
   addMonthsToDate(data: Date, numero: number): Date {
     if(data){
       let newDate = new Date(data);
-/*       if (newDate.getDate() !== data.getDate()) {
+      /*if (newDate.getDate() !== data.getDate()) {
         newDate.setDate(0);
       } */
-      if(this.planoSelected.tipo_pagamento == 'MENSAL'){
+      if(this.parcelamentoControls.get('tipo_pagamento')?.value == 'MENSAL'){
         newDate.setMonth(newDate.getMonth() + numero);
       }
 
-      if (this.planoSelected.tipo_pagamento === 'SEMANAL') {
+      if (this.parcelamentoControls.get('tipo_pagamento')?.value === 'SEMANAL') {
         const novaData = new Date(newDate);
 
         const diasParaSomar = 7 * numero;
@@ -637,8 +570,7 @@ export class ContratoFormComponent {
     this.anexosList.splice(i, 1)
   }
 
-
-  blockNegativeJuros(event: KeyboardEvent) {
+  blockNegative(event: KeyboardEvent) {
     if (event.key === '-' || event.key === '+') {
       event.preventDefault();
     }
@@ -661,8 +593,40 @@ export class ContratoFormComponent {
     const valorDecimal = parseFloat(`${reais}.${centavos}`);
 
     this.parcelamentoControls.get('taxa_juros')?.setValue(valorDecimal);
+    this.selectedParcela = {}
+    this.listOptionsParcelas = [];
+    this.parcelamentoControls.get('meio_pagamento')?.setValue('');
+    this.parcelamentoControls.get('valor_entrada')?.setValue(0);
+    this.parcelamentoControls.get('valor_parcela')?.setValue(0);
+    this.parcelamentoControls.get('qtd_parcela')?.setValue(0);
+    this.parcelamentoControls.get('avista')?.setValue(false);
   }
 
+  onChangeValorTotal(event: any){
+    const input = event.target as HTMLInputElement;
+    const value = input?.value;
+    let digits = value.replace(/\D/g, '');
+    digits = digits.replace(/^0+/, '') || '0';
+
+    while (digits.length < 3) {
+      digits = '0' + digits;
+    }
+
+    const reais = digits.slice(0, -2);
+    const centavos = digits.slice(-2);
+    this.valorTotalFormatado = `R$ ${parseInt(reais, 10)},${centavos}`;
+
+    const valorDecimal = parseFloat(`${reais}.${centavos}`);
+    this.parcelamentoControls.get('valor_total')?.setValue(valorDecimal);
+    
+    this.selectedParcela = {}
+    this.listOptionsParcelas = [];
+    this.parcelamentoControls.get('meio_pagamento')?.setValue('');
+    this.parcelamentoControls.get('valor_entrada')?.setValue(0);
+    this.parcelamentoControls.get('valor_parcela')?.setValue(0);
+    this.parcelamentoControls.get('qtd_parcela')?.setValue(0);
+    this.parcelamentoControls.get('avista')?.setValue(false);
+  }
 
   receiveSignImage(event: any){
     if(event.base64){
