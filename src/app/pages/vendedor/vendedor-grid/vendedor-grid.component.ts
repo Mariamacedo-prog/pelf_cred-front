@@ -14,6 +14,7 @@ import { AuthService } from '../../../services/auth';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { VendedorService } from '../../../services/vendedor.service';
 import { map, Observable, startWith } from 'rxjs';
+import { ExportService } from '../../../services/export.service';
 
 @Component({
   selector: 'app-vendedor-grid',
@@ -66,7 +67,12 @@ access = 'total';
   }
 
 
-  constructor( private router: Router, private toast: ToastService, private service: VendedorService, private authService: AuthService
+  constructor( 
+    private router: Router, 
+    private toast: ToastService, 
+    private service: VendedorService, 
+    private exportService: ExportService, 
+    private authService: AuthService
   ) {
     // this.authService.permissions$.subscribe(perms => {
     //   this.access = perms.usuario;
@@ -202,6 +208,23 @@ access = 'total';
   }
 
   generateExcel(): void {
-    console.log("teste")
+    let payload = [
+        {"field": "nome", "header": "Nome", "width": 40},
+        {"field": "cpf", "header": "Documento", "width": 23},
+        {"field": "email", "header": "Email", "width": 40},
+        {"field": "telefone", "header": "Telefone", "width": 22},
+        {"field": "comissao_pct", "header": "Comissão pct.", "width": 18},
+        {"field": "rg", "header": "RG", "width": 18},
+        {"field": "ativo", "header": "Ativo", "width": 18},
+        {"field": "created_at", "header": "Data de criação", "width": 30}
+    ]
+    this.exportService.generate_excel("vendedores", payload, { pagina: 1, items: 15000, filtro: this.searchTerm, filtro_cidade: this.searchCity.getRawValue() }).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "vendedores.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
   }
 }
