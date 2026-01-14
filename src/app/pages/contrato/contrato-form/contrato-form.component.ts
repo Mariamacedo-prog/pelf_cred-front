@@ -213,23 +213,36 @@ export class ContratoFormComponent {
               qtd_parcelas_pagas: data?.parcelamento?.qtd_parcelas_pagas  || null,
             });
             
-            if(data?.parcelamento?.valor_total){
-              let taxaJuros = data?.parcelamento?.taxa_juros || 0;
-              let juros = taxaJuros == 0 ? 0 : (data?.parcelamento?.valor_total / 100) * taxaJuros;
-              for(let i = 1 ; i <= this.maxParcelas; i++){
+          if (data?.parcelamento?.valor_total) {
+              this.listOptionsParcelas = [];
+
+              const valorTotal = data.parcelamento.valor_total;
+              const taxaJuros = (data?.parcelamento?.taxa_juros || 0) / 100;
+              const qtdSelecionada = data.parcelamento.qtd_parcela;
+
+              for (let i = 1; i <= this.maxParcelas; i++) {
+
+                let parcela = valorTotal;
+
+                if (taxaJuros > 0) {
+                  const fator = Math.pow(1 + taxaJuros, i);
+                  parcela = valorTotal * (taxaJuros * fator) / (fator - 1);
+                }
+
                 this.listOptionsParcelas.push({
                   number: i,
-                  value: (data?.parcelamento?.valor_total + juros) / i
-                })
+                  value: Number(parcela.toFixed(2))
+                });
 
-                if(data?.parcelamento?.qtd_parcela && (data?.parcelamento?.qtd_parcela == i)){
+                if (qtdSelecionada === i) {
                   this.selectedParcela = {
                     number: i,
-                    value: (data?.parcelamento?.valor_total + juros) / i
-                  }
+                    value: Number(parcela.toFixed(2))
+                  };
                 }
               }
             }
+
          
 
             if(data?.parcelamento?.data_inicio){
@@ -454,25 +467,38 @@ export class ContratoFormComponent {
     return client ? client.nome : '';
   }
 
-  onValorTotalSelected (){
-    let newList = []
-    let taxaJuros = this.parcelamentoControls.get('taxa_juros')?.value || 0;
-    let juros = taxaJuros == 0 ? 0 : (this.parcelamentoControls.get('valor_total')?.value / 100) * taxaJuros;
-    for(let i = 1 ; i <= this.maxParcelas; i++){
+  onValorTotalSelected() {
+    let newList = [];
+
+    const valorTotal = this.parcelamentoControls.get('valor_total')?.value || 0;
+    const taxaJuros = (this.parcelamentoControls.get('taxa_juros')?.value || 0) / 100;
+    const maxParcelas = this.maxParcelas;
+
+    for (let i = 1; i <= maxParcelas; i++) {
+
+      let parcela = valorTotal;
+
+      if (taxaJuros > 0) {
+        const fator = Math.pow(1 + taxaJuros, i);
+        parcela = valorTotal * (taxaJuros * fator) / (fator - 1);
+      }
+
       newList.push({
         number: i,
-        value: (this.parcelamentoControls.get('valor_total')?.value + juros) / i
-      })
+        value: Number(parcela.toFixed(2))
+      });
 
-      if(this.parcelamentoControls.get('qtd_parcela')?.value && (this.parcelamentoControls.get('qtd_parcela')?.value == i)){
+      if (this.parcelamentoControls.get('qtd_parcela')?.value === i) {
         this.selectedParcela = {
           number: i,
-          value: (this.parcelamentoControls.get('valor_total')?.value + juros) / i
-        }
+          value: Number(parcela.toFixed(2))
+        };
       }
     }
+
     this.listOptionsParcelas = newList;
   }
+
 
   changeParcelaOption(event: any){
     const p = event?.value;
@@ -642,7 +668,6 @@ export class ContratoFormComponent {
         anexo.id = this.responsavelAssinaturaControls?.get('id')?.value || null,
         this.service.signature_mutuante(this.id, anexo).subscribe(
           result => {
-            console.log(result)
             this.toast.show('success', "Sucesso!",'Contrato retornou para edição!');
             this.location.back();
           },
@@ -656,7 +681,6 @@ export class ContratoFormComponent {
         anexo.id = this.clienteAssinaturaControls?.get('id')?.value || null,
         this.service.signature_mutuario(this.id, anexo).subscribe(
           result => {
-            console.log(result)
             this.toast.show('success', "Sucesso!",'Contrato retornou para edição!');
             this.location.back();
           },
@@ -711,7 +735,6 @@ export class ContratoFormComponent {
 
   sendToSignature() {
     this.service.send_to_signature(this.id).subscribe((res) => {
-      console.log(res)
       this.toast.show('success', "Sucesso!",'Contrato enviado para assinatura!');
       this.location.back();
     },

@@ -88,7 +88,7 @@
                   <mat-form-field appearance="fill">
                      <mat-label>Valor total</mat-label>
                         <input 
-                           [readonly]="view || status.contrato != 'INICIADO'" 
+                           [readonly]="id ? (view || status.contrato != 'INICIADO') : false" 
                            matInput 
                            [value]="valorTotalFormatado"
                            (keydown)="blockNegative($event)"
@@ -98,19 +98,19 @@
                   <mat-form-field appearance="fill">
                      <mat-label>Taxa de juros</mat-label>
                         <input 
-                           [readonly]="view || status.contrato != 'INICIADO'" 
+                           [readonly]="id ? (view || status.contrato != 'INICIADO') : false" 
                            matInput 
                            [value]="valorFormatadoJuros"
                            (keydown)="blockNegative($event)"
                            (input)="onChangeJuros($event)"
                            />
                   </mat-form-field>
-                  <button mat-raised-button color="warn" *ngIf="id && !view && status.contrato == 'INICIADO'" (click)="onValorTotalSelected()" style="z-index: 0; position: relative;">SIMULAR</button>
+                  <button mat-raised-button color="warn" *ngIf="!view && (id ? status.contrato == 'INICIADO' : true) " (click)="onValorTotalSelected()" style="z-index: 0; position: relative;">SIMULAR</button>
                </div>
                <div class="row">
                   <mat-form-field>
                      <mat-label>Tipo de pagamento</mat-label>
-                     <mat-select [disabled]="view || status.contrato != 'INICIADO'" formControlName="tipo_pagamento" (selectionChange)="selectedDataInicio()">
+                     <mat-select [disabled]="id ? (view || status.contrato != 'INICIADO') : false" formControlName="tipo_pagamento" (selectionChange)="selectedDataInicio()">
                         @for (option of listOptionsPag; track option) {
                            <mat-option [value]="option.value">{{option.label}}</mat-option>
                         }
@@ -118,7 +118,7 @@
                   </mat-form-field>
                   <mat-form-field *ngIf="listOptionsParcelas && listOptionsParcelas.length > 0">
                      <mat-label>Opções de parcelas</mat-label>
-                     <mat-select [disabled]="view || status.contrato != 'INICIADO'" [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
+                     <mat-select [disabled]="id ? (view || status.contrato != 'INICIADO') : false" [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
                         @for (option of listOptionsParcelas; track option) {
                            <mat-option [value]="option"> {{option.number ? option.number + 'x' : ''}} de {{option.value ? option.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })  : ''}}</mat-option>
                         }

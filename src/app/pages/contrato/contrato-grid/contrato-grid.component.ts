@@ -14,6 +14,7 @@ import { AuthService } from '../../../services/auth';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { ContratoService } from '../../../services/contrato.service';
+import { ExportService } from '../../../services/export.service';
 
 @Component({
   selector: 'app-contrato-grid',
@@ -64,7 +65,11 @@ export class ContratoGridComponent {
   }
 
 
-  constructor( private router: Router, private toast: ToastService, private service: ContratoService, private authService: AuthService
+  constructor( private router: Router, 
+    private toast: ToastService, 
+    private service: ContratoService, 
+    private exportService: ExportService, 
+    private authService: AuthService
   ) {
     // this.authService.permissions$.subscribe(perms => {
     //   this.access = perms.usuario;
@@ -168,6 +173,35 @@ export class ContratoGridComponent {
   }
 
   generateExcel(): void {
-    console.log("teste")
+    let payload = [
+        {"field": "numero", "header": "Número", "width": 13},
+        {"field": "cliente.nome", "header": "Nome Cliente", "width": 40},
+        {"field": "cliente.documento", "header": "Documento Cliente", "width": 23},
+        {"field": "cliente.email", "header": "Email Cliente", "width": 40},
+        {"field": "cliente.telefone", "header": "Telefone Cliente", "width": 22},
+        {"field": "cliente.ativo", "header": "Cliente Ativo", "width": 18},
+        {"field": "status_cobranca", "header": "Status da Cobrança", "width": 25},
+        {"field": "status_contrato", "header": "Status do Contrato", "width": 25},
+        {"field": "ativo", "header": "Contrato Ativo", "width": 18},
+        {"field": "created_at", "header": "Data de criação", "width": 30},
+        {"field": "parcelamento.data_inicio", "header": "Início Parcelamento", "width": 25},
+        {"field": "parcelamento.data_fim", "header": "Fim Parcelamento", "width": 25},
+        {"field": "parcelamento.meio_pagamento", "header": "Parcelamento", "width": 18},
+        {"field": "parcelamento.valor_total", "header": "Valor total", "width": 15},
+        {"field": "parcelamento.valor_parcela", "header": "Valor da Parcela", "width": 20},
+        {"field": "parcelamento.qtd_parcela", "header": "Quant. Parcelas", "width": 21},
+        {"field": "parcelamento.taxa_juros", "header": "Taxa de Juros", "width": 18},
+        {"field": "parcelamento.qtd_parcelas_pagas", "header": "Quant. Parcelas Pagas", "width": 25},
+        {"field": "parcelamento.data_ultimo_pagamento", "header": "Dt. ultimo pagamento", "width": 25},
+        {"field": "parcelamento.tipo_pagamento", "header": "Tipo de pagamento", "width": 25}
+    ]
+    this.exportService.generate_excel("contratos", payload, { pagina: 1, items: 15000, filtro: this.searchTerm }).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "contratos.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
   }
 }
