@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ServicoService {
-private baseUrl = environment.ANGULAR_API;
+private baseUrl = environment.ANGULAR_API_V1;
   private store = inject(Store);
 
   token = '';

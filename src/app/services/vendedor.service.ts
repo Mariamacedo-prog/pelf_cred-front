@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class VendedorService {
-  private baseUrl = environment.ANGULAR_API;
+  private baseUrl = environment.ANGULAR_API_V1;
   private store = inject(Store);
 
   token = '';
@@ -37,9 +37,9 @@ export class VendedorService {
     });
   }
 
-  list_all(filtro = '', page = 1, filtro_cidade: any = null, items = 10): Observable<any> {
+  list_all(filtro = '', pagina = 1, filtro_cidade: any = null, items = 10): Observable<any> {
     let params: any = {
-      pagina: page,
+      pagina: pagina,
       items: items
     }
 

@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  ANGULAR_API: 'https://pelf-cred-back.onrender.com/api/v1',
+  ANGULAR_API_V1: 'https://pelf-cred-back.onrender.com/api/v1',
 };

@@ -17,7 +17,7 @@ interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = environment.ANGULAR_API;
+  private baseUrl = environment.ANGULAR_API_V1;
   private store = inject(Store);
   redirectUrl: string | null = null;
 

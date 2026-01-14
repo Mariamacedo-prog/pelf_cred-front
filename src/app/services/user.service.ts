@@ -11,7 +11,7 @@ import { Store } from '@ngrx/store';
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = environment.ANGULAR_API;
+  private baseUrl = environment.ANGULAR_API_V1;
   private store = inject(Store);
 
   token = '';
