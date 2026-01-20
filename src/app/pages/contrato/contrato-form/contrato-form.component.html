@@ -118,7 +118,7 @@
                   </mat-form-field>
                   <mat-form-field *ngIf="listOptionsParcelas && listOptionsParcelas.length > 0">
                      <mat-label>Opções de parcelas</mat-label>
-                     <mat-select [disabled]="id ? (view || status.contrato != 'INICIADO') : false" [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
+                     <mat-select [disabled]="id ? ((view || status.contrato != 'INICIADO')? true : false) : false" [value]="selectedParcela" [compareWith]="compareParcelas" (selectionChange)="changeParcelaOption($event)">
                         @for (option of listOptionsParcelas; track option) {
                            <mat-option [value]="option"> {{option.number ? option.number + 'x' : ''}} de {{option.value ? option.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })  : ''}}</mat-option>
                         }

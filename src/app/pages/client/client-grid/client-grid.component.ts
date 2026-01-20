@@ -14,7 +14,7 @@ import { ToastService } from '../../../services/toast';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { AuthService } from '../../../services/auth';
 import { ClientService } from '../../../services/client.service';
-import { DateAdapter } from '@angular/material/core';
+import { ExportService } from '../../../services/export.service';
 
 @Component({
   selector: 'app-client-grid',
@@ -65,7 +65,7 @@ export class ClientGridComponent {
   }
 
 
-  constructor( private router: Router, private toast: ToastService, private clientService: ClientService, private authService: AuthService
+  constructor( private router: Router, private toast: ToastService, private clientService: ClientService, private authService: AuthService,     private exportService: ExportService
   ) {
     // this.authService.permissions$.subscribe(perms => {
     //   this.access = perms.usuario;
@@ -174,6 +174,37 @@ export class ClientGridComponent {
   }
 
   generateExcel(): void {
-    console.log("teste")
+    let payload = [
+        {"field": "nome", "header": "Nome ", "width": 70},
+        {"field": "documento", "header": "Documento ", "width": 23},
+        {"field": "email", "header": "Email ", "width": 40},
+        {"field": "telefone", "header": "Telefone ", "width": 22},
+        {"field": "ativo", "header": " Ativo", "width": 18},
+        {"field": "grupo_segmento", "header": "Grupo Segmento", "width": 25},
+        {"field": "status_contrato", "header": "Status do Contrato", "width": 25},
+        {"field": "created_at", "header": "Data de criação", "width": 30},
+        {"field": "endereco.rua", "header": "(Endereço): Rua", "width": 50},
+        {"field": "endereco.numero", "header": "Número", "width": 20},
+        {"field": "endereco.bairro", "header": "Bairro", "width": 30},
+        {"field": "endereco.cidade", "header": "Cidade", "width": 30},
+        {"field": "endereco.uf", "header": "UF", "width": 20},
+        {"field": "endereco.cep", "header": "CEP", "width": 25},
+        {"field": "endereco.complemento", "header": "Complemento", "width": 25},
+        {"field": "endereco_comercial.rua", "header": "(Endereço comercial): Rua", "width": 50},
+        {"field": "endereco_comercial.numero", "header": "(comercial): Número", "width": 25},
+        {"field": "endereco_comercial.bairro", "header": "(comercial): Bairro", "width": 30},
+        {"field": "endereco_comercial.cidade", "header": "(comercial): Cidade", "width": 30},
+        {"field": "endereco_comercial.uf", "header": "(comercial): UF", "width": 20},
+        {"field": "endereco_comercial.cep", "header": "(comercial): CEP", "width": 25},
+        {"field": "endereco_comercial.complemento", "header": "(comercial): Complemento", "width": 30}
+    ]
+    this.exportService.generate_excel("clientes", payload, { pagina: 1, items: 15000, filtro: this.searchTerm }).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "clientes.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
   }
 }
