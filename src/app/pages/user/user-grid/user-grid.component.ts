@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogComponent } from '../../../components/dialog/dialog.component';
+import { ExportService } from '../../../services/export.service';
 
 @Component({
   selector: 'app-user-grid',
@@ -59,8 +60,13 @@ export class UserGridComponent {
   }
 
 
-  constructor(private router: Router, private toast: ToastService, private userService: UserService, 
-    public dialog: MatDialog, private authService: AuthService
+  constructor(
+    private router: Router, 
+    private toast: ToastService, 
+    private userService: UserService, 
+    public dialog: MatDialog, 
+    private authService: AuthService, 
+    private exportService: ExportService
   ) {
     // this.authService.permissions$.subscribe(perms => {
     //   this.access = perms.usuario;
@@ -152,6 +158,30 @@ export class UserGridComponent {
   }
 
   generateExcel(): void {
-    console.log("teste")
+     let payload = [
+        {"field": "nome", "header": "Nome ", "width": 70},
+        {"field": "cpf", "header": "Documento ", "width": 23},
+        {"field": "email", "header": "Email ", "width": 40},
+        {"field": "telefone", "header": "Telefone ", "width": 22},
+        {"field": "ativo", "header": " Ativo", "width": 18},
+        {"field": "username", "header": "Username", "width": 25},
+        {"field": "created_at", "header": "Data de criação", "width": 30},
+        {"field": "endereco.rua", "header": "Rua", "width": 50},
+        {"field": "endereco.numero", "header": "Número", "width": 20},
+        {"field": "endereco.bairro", "header": "Bairro", "width": 30},
+        {"field": "endereco.cidade", "header": "Cidade", "width": 30},
+        {"field": "endereco.uf", "header": "UF", "width": 20},
+        {"field": "endereco.cep", "header": "CEP", "width": 25},
+        {"field": "endereco.complemento", "header": "Complemento", "width": 25}
+    ]
+
+    this.exportService.generate_excel("users", payload, { pagina: 1, items: 15000, filtro: this.searchTerm}).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "usuarios.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
   }
 }

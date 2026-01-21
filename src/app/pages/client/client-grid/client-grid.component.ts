@@ -65,7 +65,12 @@ export class ClientGridComponent {
   }
 
 
-  constructor( private router: Router, private toast: ToastService, private clientService: ClientService, private authService: AuthService,     private exportService: ExportService
+  constructor( 
+    private router: Router, 
+    private toast: ToastService, 
+    private clientService: ClientService, 
+    private authService: AuthService, 
+    private exportService: ExportService
   ) {
     // this.authService.permissions$.subscribe(perms => {
     //   this.access = perms.usuario;
@@ -198,7 +203,15 @@ export class ClientGridComponent {
         {"field": "endereco_comercial.cep", "header": "(comercial): CEP", "width": 25},
         {"field": "endereco_comercial.complemento", "header": "(comercial): Complemento", "width": 30}
     ]
-    this.exportService.generate_excel("clientes", payload, { pagina: 1, items: 15000, filtro: this.searchTerm }).subscribe(blob => {
+
+    
+    let formatedDate = null
+    if(this.searchDate){
+      const originalDate = new Date(this.searchDate);
+      formatedDate = originalDate.toISOString().slice(0, 10);
+    }
+
+    this.exportService.generate_excel("clientes", payload, { pagina: 1, items: 15000, search: this.searchTerm, ativo: this.searchStatus, data_cadastro: formatedDate}).subscribe(blob => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
