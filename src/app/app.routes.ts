@@ -14,17 +14,18 @@ export const routes: Routes = [
     { path: 'cliente/lista', loadComponent: () => import('./pages/client/client-grid/client-grid.component').then(c => c.ClientGridComponent), canActivate: [authGuard]},
     { path: 'cliente/form/:id', loadComponent: () => import('./pages/client/client-form/client-form.component').then(c => c.ClientFormComponent), canActivate: [authGuard]},
     { path: 'cliente/form/:id/:tela', loadComponent: () => import('./pages/client/client-form/client-form.component').then(c => c.ClientFormComponent), canActivate: [authGuard]},
-    // Plano
-    { path: 'plano/novo', loadComponent: () => import('./pages/plano/plano-form/plano-form.component').then(c => c.PlanoFormComponent), canActivate: [authGuard]},
-    { path: 'plano/lista', loadComponent: () => import('./pages/plano/plano-grid/plano-grid.component').then(c => c.PlanoGridComponent), canActivate: [authGuard]},
-    { path: 'plano/form/:id', loadComponent: () => import('./pages/plano/plano-form/plano-form.component').then(c => c.PlanoFormComponent), canActivate: [authGuard]},
-    { path: 'plano/form/:id/:tela', loadComponent: () => import('./pages/plano/plano-form/plano-form.component').then(c => c.PlanoFormComponent), canActivate: [authGuard]},
-    // Serviço
-    { path: 'servico/novo', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
-    { path: 'servico/lista', loadComponent: () => import('./pages/servico/servico-grid/servico-grid.component').then(c => c.ServicoGridComponent), canActivate: [authGuard]},
-    { path: 'servico/form/:id', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
-    { path: 'servico/form/:id/:tela', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
-
+    /*    
+        // Plano
+        { path: 'plano/novo', loadComponent: () => import('./pages/plano/plano-form/plano-form.component').then(c => c.PlanoFormComponent), canActivate: [authGuard]},
+        { path: 'plano/lista', loadComponent: () => import('./pages/plano/plano-grid/plano-grid.component').then(c => c.PlanoGridComponent), canActivate: [authGuard]},
+        { path: 'plano/form/:id', loadComponent: () => import('./pages/plano/plano-form/plano-form.component').then(c => c.PlanoFormComponent), canActivate: [authGuard]},
+        { path: 'plano/form/:id/:tela', loadComponent: () => import('./pages/plano/plano-form/plano-form.component').then(c => c.PlanoFormComponent), canActivate: [authGuard]},
+        // Serviço
+        { path: 'servico/novo', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
+        { path: 'servico/lista', loadComponent: () => import('./pages/servico/servico-grid/servico-grid.component').then(c => c.ServicoGridComponent), canActivate: [authGuard]},
+        { path: 'servico/form/:id', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
+        { path: 'servico/form/:id/:tela', loadComponent: () => import('./pages/servico/servico-form/servico-form.component').then(c => c.ServicoFormComponent), canActivate: [authGuard]},
+    */
     // Vendedor
     { path: 'vendedor/novo', loadComponent: () => import('./pages/vendedor/vendedor-form/vendedor-form.component').then(c => c.VendedorFormComponent), canActivate: [authGuard]},
     { path: 'vendedor/lista', loadComponent: () => import('./pages/vendedor/vendedor-grid/vendedor-grid.component').then(c => c.VendedorGridComponent), canActivate: [authGuard]},
@@ -39,4 +40,12 @@ export const routes: Routes = [
 
     // Dashboard
     { path: 'dashboard/lista', loadComponent: () => import('./pages/dashboard/dashboard-grid/dashboard-grid.component').then(c => c.DashboardGridComponent), canActivate: [authGuard]},
+
+
+    // Inadimplêntes
+    { path: 'inadimplente/novo', loadComponent: () => import('./pages/inadimplente/inadimplente-form/inadimplente-form.component').then(c => c.InadimplenteFormComponent), canActivate: [authGuard]},
+    { path: 'inadimplente/lista', loadComponent: () => import('./pages/inadimplente/inadimplente-grid/inadimplente-grid.component').then(c => c.InadimplenteGridComponent), canActivate: [authGuard]},
+    { path: 'inadimplente/form/:id', loadComponent: () => import('./pages/inadimplente/inadimplente-form/inadimplente-form.component').then(c => c.InadimplenteFormComponent), canActivate: [authGuard]},
+    { path: 'inadimplente/form/:id/:tela', loadComponent: () => import('./pages/inadimplente/inadimplente-form/inadimplente-form.component').then(c => c.InadimplenteFormComponent), canActivate: [authGuard]},
+
 ];

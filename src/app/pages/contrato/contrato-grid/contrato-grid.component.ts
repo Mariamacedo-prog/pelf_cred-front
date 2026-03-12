@@ -38,7 +38,8 @@ export class ContratoGridComponent {
   private typingTimer: any;
   loading = false;
 
-  displayedColumns: string[] = ['numero_contrato', 'cliente', 'plano', 'valor', 'data_inicio', 'data_termino', 'status', 'actions'];
+  
+  displayedColumns: string[] = ['numero_contrato', 'cliente', 'qtd_pacelas', 'capital', 'juros','valor_total', 'data_inicio', 'contrato_dias', 'status', 'actions'];
   data = [];
   searchTerm: string = '';
   optionsCity: any = []
@@ -203,5 +204,28 @@ export class ContratoGridComponent {
       a.click();
       window.URL.revokeObjectURL(url);
     })
+  }
+
+  getValorTotal(element: any){
+    if(element?.parcelamento?.qtd_parcela && element?.parcelamento?.valor_parcela){
+      let valor = element?.parcelamento?.qtd_parcela * element?.parcelamento?.valor_parcela;
+      return valor ? valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : ""
+    }else{
+      return '';
+    }
+  }
+
+  diasDesde(element: any) {
+    if(element?.parcelamento?.created_at){
+      const dataCriacao: any = new Date(element?.parcelamento?.created_at);
+      const hoje: any = new Date();
+
+      const diffMs = hoje - dataCriacao;
+      const dias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      return `${dias} dias`;
+    }else{
+      return ''
+    }
   }
 }

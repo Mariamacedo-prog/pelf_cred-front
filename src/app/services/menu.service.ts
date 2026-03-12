@@ -5,15 +5,16 @@ import { Injectable } from '@angular/core';
 })
 export class MenuService {
   menu = [
-    {"icon": "dashboard", "value": "dashboard", "label": "Dashboard", "route": "/dashboard/lista", id: 7, principal: true},
-    {"icon": "group", "value": "usuario", "label": "Usuários", "route": "/usuario/lista", id: 1, principal: false},
-    {"icon": "tag_faces", "value": "cliente", "label": "Clientes", "route": "/cliente/lista", id: 2, principal: false},
+    {"icon": "dashboard", "value": "dashboard", "label": "Dashboard", "route": "/dashboard/lista", id: 1, principal: true},
+    {"icon": "group", "value": "usuario", "label": "Usuários", "route": "/usuario/lista", id: 2, principal: false},
+    {"icon": "tag_faces", "value": "cliente", "label": "Clientes", "route": "/cliente/lista", id: 3, principal: false},
+    {"icon": "account_circle", "value": "vendedor", "label": "Vendedores", "route": "/vendedor/lista", id: 4, principal: false},
+    {"icon": "border_color", "label": "Contratos", "value": "contrato", "route": "/contrato/lista", id: 5, principal: false},
+    {"icon": "warning", "value": "inadimplentes", "label": "Inadimplêntes", "route": "/inadimplente/lista", id: 6, principal: false},
     /* 
-    {"icon": "radio_button_unchecked", "label": "Serviços", "value": "servico",   "route": "/servico/lista", id: 3, principal: false},
-    {"icon": "local_atm", "label": "Planos", "value": "plano", "route": "/plano/lista", id: 4, principal: false}, 
+      {"icon": "radio_button_unchecked", "label": "Serviços", "value": "servico",   "route": "/servico/lista", id: 3, principal: false},
+      {"icon": "local_atm", "label": "Planos", "value": "plano", "route": "/plano/lista", id: 4, principal: false}, 
     */
-    {"icon": "account_circle", "value": "vendedor", "label": "Vendedores", "route": "/vendedor/lista", id: 5, principal: false},
-    {"icon": "border_color", "label": "Contratos", "value": "contrato", "route": "/contrato/lista", id: 6, principal: false},
    //   {"icon": "how_to_reg", "value": "acesso", "label": "Acessos", "route": "/acesso/lista", id: 2, principal: false},
    //   {"icon": "account_box", "value": "funcionario", "label": "Funcionários", "route": "/funcionario/lista", id: 3, principal: false},
    //   {"icon": "location_city", "value": "imovel", "label": "Imóvel", "route": "/imovel/lista", id: 5, principal: false},

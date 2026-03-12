@@ -51,6 +51,24 @@ export class TransacaoService {
     });
   }
 
+  list_all_overdue(filtro = '',  page = 1, items = 10): Observable<any> {
+    let params: any = {
+      pagina: page,
+      items: items
+    }
+
+    if(filtro){
+      params.filtro = filtro
+    }
+
+    return this.http.get(`${this.baseUrl}/transacoes/atraso`,{ 
+      params: params,
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+  }
+
   total_all(data_inicio = null, data_fim = null): Observable<any> {
     let params: any = {
     }

@@ -471,16 +471,16 @@ export class ContratoFormComponent {
     let newList = [];
 
     const valorTotal = this.parcelamentoControls.get('valor_total')?.value || 0;
-    const taxaJuros = (this.parcelamentoControls.get('taxa_juros')?.value || 0) / 100;
+    const taxaJuros = (this.parcelamentoControls.get('taxa_juros')?.value || 0);
+    const valorJuros = valorTotal * (taxaJuros / 100);
+    const totalComJuros = valorTotal + valorJuros;
     const maxParcelas = this.maxParcelas;
 
     for (let i = 1; i <= maxParcelas; i++) {
-
-      let parcela = valorTotal;
+      let parcela = totalComJuros;
 
       if (taxaJuros > 0) {
-        const fator = Math.pow(1 + taxaJuros, i);
-        parcela = valorTotal * (taxaJuros * fator) / (fator - 1);
+        parcela = totalComJuros / i;
       }
 
       newList.push({
