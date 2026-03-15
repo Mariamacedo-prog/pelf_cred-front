@@ -235,7 +235,7 @@
                   <button *ngIf="this.access !== 'restrito'" class="icon-visualizar" mat-icon-button (click)="openTransacaoModal(element, false)">
                      <mat-icon >visibility</mat-icon>
                   </button>
-                  <button *ngIf="this.access === 'total' && element?.status_parcela != 'PAGO'" class="icon-editar" mat-icon-button (click)="openTransacaoModal(element, true)">
+                  <button *ngIf="this.access === 'total' && showEditButton(element)" class="icon-editar" mat-icon-button (click)="openTransacaoModal(element, true)">
                      <mat-icon >edit</mat-icon>
                   </button>
                </td>

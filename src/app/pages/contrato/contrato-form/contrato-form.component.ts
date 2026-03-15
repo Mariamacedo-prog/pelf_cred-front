@@ -754,4 +754,13 @@ export class ContratoFormComponent {
           'Ocorreu um erro!')
     })
   }
+
+  showEditButton(element: any){
+
+    const firstLine = this.transacoesList.find((t: any) => 
+      t.status_parcela === 'EM_ATRASO' || t.status_parcela === 'PAGAMENTO_PARCIAL'
+    );
+
+    return firstLine && firstLine.id === element.id;
+  }
 }
