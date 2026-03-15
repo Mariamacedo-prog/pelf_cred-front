@@ -63,6 +63,7 @@ export class ClientFormComponent {
     this.formControls = new FormGroup({
       documento: new FormControl('', [Validators.required, this.validateService.validateCPForCNPJ]),
       nome: new FormControl('', Validators.required),
+      apelido: new FormControl(''),
       email: new FormControl('', [Validators.required, Validators.email]),
       telefone: new FormControl('', [Validators.required,  Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$/)]),
       grupo_segmento: new FormControl(''),
@@ -98,6 +99,7 @@ export class ClientFormComponent {
             documento: data.documento || '',
             nome: data.nome || '',
             email: data.email || '',
+            apelido: data.apelido || '',
             telefone: data.telefone || '',
             grupo_segmento: data.grupo_segmento || '',
           });
@@ -140,6 +142,7 @@ export class ClientFormComponent {
         email: this.formControls?.get('email')?.value,
         telefone: this.formControls?.get('telefone')?.value,
         grupo_segmento: this.formControls?.get('grupo_segmento')?.value,
+        apelido: this.formControls?.get('apelido')?.value,
         endereco: this.enderecoControls.getRawValue()
       };
 
@@ -173,6 +176,7 @@ export class ClientFormComponent {
         email: this.formControls?.get('email')?.value,
         telefone: this.formControls?.get('telefone')?.value,
         grupo_segmento: this.formControls?.get('grupo_segmento')?.value,
+        apelido: this.formControls?.get('apelido')?.value,
         endereco: this.enderecoControls.getRawValue()
       };
 

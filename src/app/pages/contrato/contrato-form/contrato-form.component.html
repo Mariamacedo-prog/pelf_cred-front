@@ -33,7 +33,10 @@
                   <mat-label>Nome cliente:</mat-label>
                   <input disabled  matInput [value]="clientSelected?.nome || ''" />
                </mat-form-field>
-       
+               <mat-form-field appearance="fill">
+                  <mat-label>Apelido cliente:</mat-label>
+                  <input disabled  matInput [value]="clientSelected?.apelido || ''" />
+               </mat-form-field>
             </div>
             <div class="row mb-5" *ngIf="clientSelected.documento">
                <mat-form-field appearance="fill">
@@ -149,17 +152,6 @@
                      >
                      <mat-datepicker-toggle matIconSuffix [for]="datafim"></mat-datepicker-toggle>
                      <mat-datepicker #datafim></mat-datepicker>
-                  </mat-form-field>
-                  <mat-form-field>
-                     <mat-label>Data Vigência</mat-label>
-                     <input matInput 
-                        [readonly]="view"
-                        formControlName="data_vigencia"
-                        placeholder="DD/MM/YYYY"
-                        [matDatepicker]="datavigencia"
-                     >
-                     <mat-datepicker-toggle matIconSuffix [for]="datavigencia"></mat-datepicker-toggle>
-                     <mat-datepicker #datavigencia></mat-datepicker>
                   </mat-form-field>
                </div>
             </mat-card-content>

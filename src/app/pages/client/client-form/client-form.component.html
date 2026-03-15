@@ -34,6 +34,13 @@
 
             <div class="row">
                <mat-form-field appearance="fill">
+                  <mat-label>Apelido</mat-label>
+                  <input [readonly]="view" matInput formControlName="apelido" />
+                  <mat-error *ngIf="formControls.get('apelido')?.hasError('required')">
+                     Este campo é <strong>obrigatório</strong>
+                  </mat-error>
+               </mat-form-field>
+               <mat-form-field appearance="fill">
                   <mat-label>E-mail</mat-label>
                   <input [readonly]="view" matInput formControlName="email" />
                   <mat-error *ngIf="formControls.get('email')?.hasError('required')">

@@ -38,7 +38,7 @@ export class ClientGridComponent {
   private typingTimer: any;
   loading = false;
 
-  displayedColumns: string[] = ['nome', 'documento', 'endereco', 'telefone', 'email', 'status', 'actions'];
+  displayedColumns: string[] = ['nome','apelido', 'documento', 'endereco', 'telefone', 'email', 'status', 'actions'];
   data = [];
   searchTerm: string = '';
   searchDate: any = null;

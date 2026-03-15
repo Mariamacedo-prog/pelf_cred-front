@@ -49,7 +49,8 @@ export class DashboardGridComponent {
   listOptionsStatus: any = [
     { label: 'GERADO', value: 'GERADO'},
     { label: 'EM_ATRASO', value: 'EM_ATRASO'},
-    { label: 'PAGA', value: 'PAGA'}
+    { label: 'PAGA', value: 'PAGA'},
+    { label: 'PAGAMENTO_PARCIAL', value: 'PAGAMENTO_PARCIAL'}
   ]
 
   length = 1;
