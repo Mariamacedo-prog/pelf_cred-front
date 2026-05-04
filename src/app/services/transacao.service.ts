@@ -96,4 +96,25 @@ export class TransacaoService {
       }
     });
   }
+
+  get_contacts_by_contrato_id(id: string, page: number = 1, items: number = 5): Observable<any> {
+      let params: any = {
+        pagina: page,
+        items: items
+      }
+     return this.http.get(`${this.baseUrl}/contatos/${id}`, {
+      params: params,
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+  }
+
+  create_contact(data: any): Observable<any> {
+     return this.http.post(`${this.baseUrl}/contato`, data, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+  }
 }

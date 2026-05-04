@@ -1,1 +1,185 @@
-<p>inadimplente-form works!</p>
+<div class="container-form">
+  <mat-card class="card-form">
+    <mat-card-header>
+      <mat-card-title *ngIf="id">Dados do Inadimplente </mat-card-title>
+    </mat-card-header>
+
+
+     <mat-card-content [formGroup]="formControls">
+        <div class="row">
+            <mat-form-field appearance="fill">
+                <mat-label>Número da parcela em atraso</mat-label>
+                <input [readonly]="true" matInput formControlName="numero_parcela" />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Valor</mat-label>
+                <input [readonly]="true" matInput formControlName="valor" value="{{formControls.get('valor')?.getRawValue()?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}}" />
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="fill">
+                <mat-label>Data de Vencimento</mat-label>
+                <input [readonly]="true" matInput  value="{{formControls.get('data_vencimento')?.getRawValue() ? (formControls.get('data_vencimento')?.getRawValue() | date:'dd/MM/yyyy':'UTC' ) : ''}}" />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Status da parcela</mat-label>
+                <input [readonly]="true" matInput formControlName="status_parcela" />
+            </mat-form-field>
+        </div>
+    </mat-card-content>
+
+
+    <mat-card-content [formGroup]="contactsControls">
+        <div class="row">
+            <mat-form-field appearance="fill">
+                <mat-label>Nome</mat-label>
+                <input [readonly]="true" matInput value="{{contactsControls.get('contrato')?.getRawValue()?.cliente?.nome}}" />
+            </mat-form-field>
+        </div>
+
+        <div class="row">
+            <mat-form-field appearance="fill">
+                <mat-label>Documento</mat-label>
+                <input [readonly]="true" matInput value="{{contactsControls.get('contrato')?.getRawValue()?.cliente?.documento}}" />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>E-mail</mat-label>
+                <input [readonly]="true" matInput value="{{contactsControls.get('contrato')?.getRawValue()?.cliente?.email}}" />
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Telefone</mat-label>
+                <input [readonly]="true" matInput value="{{contactsControls.get('contrato')?.getRawValue()?.cliente?.telefone}}" />
+            </mat-form-field>
+        </div>
+
+
+        <div class="row">
+            <mat-form-field appearance="fill">
+            <mat-label>Parcelamento</mat-label>
+            <input [readonly]="true" matInput value="{{`${contactsControls.get('contrato')?.getRawValue()?.parcelamento?.qtd_parcela}X de ${contactsControls.get('contrato')?.getRawValue()?.parcelamento?.valor_parcela?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`}}" />
+            </mat-form-field>
+        </div>
+    </mat-card-content>
+
+
+    <mat-card-header>
+      <mat-card-title *ngIf="id">Adicionar Novo Contato </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content [formGroup]="newContactControls">
+        <div class="row">
+            <mat-form-field appearance="fill">
+                <mat-label>Meio de contato</mat-label>
+                <mat-select formControlName="meio">
+                    @for (option of contactTypesList; track option) {
+                        <mat-option [value]="option">{{option}}</mat-option>
+                    }
+                </mat-select>
+                <mat-error *ngIf="newContactControls.get('meio')?.hasError('required')">
+                    Este campo é <strong>obrigatório</strong>
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="row">
+             <mat-form-field appearance="fill">
+                <mat-label>Status</mat-label>
+                <mat-select formControlName="status">
+                    @for (option of statusTypesList; track option) {
+                        <mat-option [value]="option">{{option}}</mat-option>
+                    }
+                </mat-select>
+                <mat-error *ngIf="newContactControls.get('status')?.hasError('required')">
+                    Este campo é <strong>obrigatório</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Efetivo</mat-label>
+                <mat-select formControlName="efetivo">
+                    <mat-option [value]="true">SIM</mat-option>
+                    <mat-option [value]="false">NÃO</mat-option>
+                </mat-select>
+                <mat-error *ngIf="newContactControls.get('status')?.hasError('required')">
+                    Este campo é <strong>obrigatório</strong>
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+
+        <div class="row">
+            <mat-form-field appearance="fill">
+                <mat-label>Descrição</mat-label>
+               <textarea 
+                    matInput 
+                    formControlName="descricao"
+                    formControlName="descricao"
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="3"
+                    cdkAutosizeMaxRows="8">
+                </textarea>
+                <mat-error *ngIf="newContactControls.get('meio')?.hasError('required')">
+                    Este campo é <strong>obrigatório</strong>
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </mat-card-content>
+ 
+   <div class="button-area">
+      <button mat-raised-button color="primary" *ngIf="id" (click)="create()">Cadastrar contato</button>
+      <button mat-stroked-button color="accent" (click)="backPage()">Voltar</button>
+   </div>
+
+  </mat-card>
+</div>
+
+<div class="container-form">
+    <div *ngIf="loading" style="display: flex; align-items: center; justify-content: center;">
+    <div class="meu-loading-spinner"></div>
+  </div>
+  
+
+    <mat-card-header>
+        <mat-card-title *ngIf="id">Listagem de Contatos </mat-card-title>
+    </mat-card-header>
+
+  <table *ngIf="!loading" mat-table [dataSource]="this.contactsControls.get('data')?.getRawValue()" class="mat-elevation-z8">
+    <ng-container matColumnDef="data_hora">
+      <th mat-header-cell *matHeaderCellDef >Data</th>
+      <td mat-cell *matCellDef="let element" > {{ element?.data_hora ? (element?.data_hora | date:'dd/MM/yyyy HH:mm':'UTC' ) : ''}} </td>
+    </ng-container>
+    <ng-container matColumnDef="descricao">
+      <th mat-header-cell *matHeaderCellDef >Descrição</th>
+      <td mat-cell *matCellDef="let element" > {{element?.descricao}} </td>
+    </ng-container>
+    <ng-container matColumnDef="efetivo">
+      <th mat-header-cell *matHeaderCellDef > Efetivo </th>
+      <td mat-cell *matCellDef="let element"> {{element?.efetivo ? 'SIM' : 'NÃO'}} </td>
+    </ng-container>
+    <ng-container matColumnDef="meio" >
+      <th mat-header-cell *matHeaderCellDef > Meio </th>
+      <td mat-cell *matCellDef="let element"> {{element?.meio}} </td>
+    </ng-container>
+    <ng-container matColumnDef="status" >
+      <th mat-header-cell *matHeaderCellDef >Status</th>
+      <td mat-cell *matCellDef="let element" >  {{element?.status}} </td>
+    </ng-container>
+    <ng-container matColumnDef="valor" >
+      <th mat-header-cell *matHeaderCellDef >Valor</th>
+      <td mat-cell *matCellDef="let element" > {{ element?.valor ? (element?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })) : '' }} </td>
+    </ng-container>
+
+ 
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator
+    *ngIf="!loading"
+    [length]="length" 
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="true"
+    [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
+    [pageIndex]="pageIndex"
+    (page)="handlePageEvent($event)">
+  </mat-paginator>
+</div>

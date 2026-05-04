@@ -48,8 +48,7 @@ import { DialogTransacaoComponent } from '../../../components/dialog-transacao/d
     DialogTransacaoComponent,
     SignaturePadComponent,
     MatButtonToggleModule,
-    MatTableModule, 
-    CommonModule],
+    MatTableModule],
   providers:[],
   templateUrl: './contrato-form.component.html',
   styleUrl: './contrato-form.component.scss'

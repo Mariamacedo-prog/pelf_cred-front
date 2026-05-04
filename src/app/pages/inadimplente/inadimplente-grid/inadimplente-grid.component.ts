@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
-import { DialogComponent } from '../../../components/dialog/dialog.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,9 +20,9 @@ import { TransacaoService } from '../../../services/transacao.service';
   imports: [CommonModule, 
     MatPaginatorModule,
     MatIconModule,
+    MatTableModule, 
     FormsModule, 
     MatFormFieldModule, 
-    MatTableModule, 
     MatInputModule,
     RouterModule,
     MatSelectModule,
@@ -33,11 +32,11 @@ import { TransacaoService } from '../../../services/transacao.service';
   styleUrl: './inadimplente-grid.component.scss'
 })
 export class InadimplenteGridComponent {
- access = 'total';
+  access = 'total';
   private typingTimer: any;
   loading = false;
 
-  displayedColumns: string[] = ['contrato', 'documento', 'email', 'telefone', 'data_vencimento', 'valor', 'actions'];
+  displayedColumns: string[] = ['contrato', 'documento', 'email', 'telefone', 'data_vencimento', 'numero_parcela', 'valor', 'actions'];
   data = [];
   searchTerm: string = '';
   searchDate: any = null;
@@ -112,8 +111,8 @@ export class InadimplenteGridComponent {
     );
   }
 
-  viewItem(element: any){
-    this.router.navigate(["/inadimplente/form/" + element.id + "/visualizar"]);
+  editItem(element: any){
+    this.router.navigate(["/inadimplente/form/" + element.id ]);
   }
 
   clearSearch() {

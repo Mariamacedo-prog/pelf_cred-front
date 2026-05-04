@@ -52,6 +52,10 @@
       <th mat-header-cell *matHeaderCellDef >Data vencimento</th>
       <td mat-cell *matCellDef="let element" > {{ element?.data_vencimento ? (element?.data_vencimento | date: 'dd/MM/yyyy') : '' }} </td>
     </ng-container>
+    <ng-container matColumnDef="numero_parcela">
+      <th mat-header-cell *matHeaderCellDef >Número da parcela</th>
+      <td mat-cell *matCellDef="let element" > {{element?.numero_parcela || ''}} </td>
+    </ng-container>
     <ng-container matColumnDef="valor" >
       <th mat-header-cell *matHeaderCellDef >Valor</th>
       <td mat-cell *matCellDef="let element" > {{element.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || ''}} </td>
@@ -59,10 +63,7 @@
     <ng-container matColumnDef="actions" class="">
       <th mat-header-cell *matHeaderCellDef > Ações </th>
       <td mat-cell *matCellDef="let element" >
-        <button *ngIf="this.access !== 'restrito'" class="icon-visualizar" mat-icon-button (click)="viewItem(element)">
-          <mat-icon >call</mat-icon>
-        </button>
-        <button *ngIf="this.access === 'total'" class="icon-editar" mat-icon-button (click)="viewItem(element)">
+        <button *ngIf="this.access === 'total'" class="icon-editar" mat-icon-button (click)="editItem(element)">
           <mat-icon >edit</mat-icon>
         </button>
       </td>
