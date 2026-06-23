@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { DialogTransacaoComponent } from '../../../components/dialog-transacao/dialog-transacao.component';
 
 @Component({
   selector: 'app-inadimplente-form',
@@ -30,6 +31,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
     RouterModule, 
     MatButtonModule,
     MatDividerModule,
+    DialogTransacaoComponent,
     TextFieldModule,
     CommonModule
   ],
@@ -59,6 +61,10 @@ export class InadimplenteFormComponent {
   contactsControls!: FormGroup;
   newContactControls!: FormGroup;
   item = {}
+  showModal: boolean = false;
+  editModal: boolean = false;
+
+
   constructor(
     private route: ActivatedRoute,
     private toast: ToastService, 
@@ -188,7 +194,6 @@ export class InadimplenteFormComponent {
       this.service.create_contact(contact).subscribe(
         data => {
           this.toast.show('success', "Sucesso!",'Contato realizado com sucesso!');
-          this.location.back();
         },
         error => {
             this.toast.show('error', "Erro!", error.error.detail || 
@@ -236,6 +241,12 @@ export class InadimplenteFormComponent {
         }
     );
   }
+
+  openTransacaoModal(edit: boolean){
+    this.showModal = true;
+    this.editModal = edit;
+  }
+
  
   backPage(){
     this.location.back();
